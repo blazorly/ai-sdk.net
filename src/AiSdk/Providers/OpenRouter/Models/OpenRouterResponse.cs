@@ -1,0 +1,81 @@
+using System.Text.Json.Serialization;
+
+namespace AiSdk.Providers.OpenRouter.Models;
+
+/// <summary>
+/// OpenRouter chat completion response.
+/// </summary>
+internal record OpenRouterResponse
+{
+    [JsonPropertyName("id")]
+    public required string Id { get; init; }
+
+    [JsonPropertyName("object")]
+    public required string Object { get; init; }
+
+    [JsonPropertyName("created")]
+    public required long Created { get; init; }
+
+    [JsonPropertyName("model")]
+    public required string Model { get; init; }
+
+    [JsonPropertyName("choices")]
+    public required List<OpenRouterChoice> Choices { get; init; }
+
+    [JsonPropertyName("usage")]
+    public OpenRouterUsage? Usage { get; init; }
+}
+
+/// <summary>
+/// OpenRouter choice in a response.
+/// </summary>
+internal record OpenRouterChoice
+{
+    [JsonPropertyName("index")]
+    public required int Index { get; init; }
+
+    [JsonPropertyName("message")]
+    public OpenRouterMessage? Message { get; init; }
+
+    [JsonPropertyName("finish_reason")]
+    public string? FinishReason { get; init; }
+}
+
+/// <summary>
+/// OpenRouter usage statistics.
+/// </summary>
+internal record OpenRouterUsage
+{
+    [JsonPropertyName("prompt_tokens")]
+    public required int PromptTokens { get; init; }
+
+    [JsonPropertyName("completion_tokens")]
+    public required int CompletionTokens { get; init; }
+
+    [JsonPropertyName("total_tokens")]
+    public required int TotalTokens { get; init; }
+}
+
+/// <summary>
+/// OpenRouter error response.
+/// </summary>
+internal record OpenRouterErrorResponse
+{
+    [JsonPropertyName("error")]
+    public required OpenRouterError Error { get; init; }
+}
+
+/// <summary>
+/// OpenRouter error details.
+/// </summary>
+internal record OpenRouterError
+{
+    [JsonPropertyName("message")]
+    public required string Message { get; init; }
+
+    [JsonPropertyName("type")]
+    public string? Type { get; init; }
+
+    [JsonPropertyName("code")]
+    public string? Code { get; init; }
+}

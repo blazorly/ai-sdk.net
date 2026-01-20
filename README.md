@@ -1,8 +1,8 @@
 # AI SDK for .NET
 
-> **Status:** Phases 1-7 Complete ✅ | Production Ready | .NET 10.0+
+> **Status:** Phases 1-8 Complete ✅ | Production Ready | .NET 10.0+
 
-A comprehensive .NET SDK for integrating with AI providers, offering a unified interface for language models, embeddings, structured output, and streaming. **Single package, 25 providers included.**
+A comprehensive .NET SDK for integrating with AI providers, offering a unified interface for language models, embeddings, structured output, and streaming. **Single package, 32 providers included.**
 
 ## Current Status
 
@@ -15,6 +15,7 @@ A comprehensive .NET SDK for integrating with AI providers, offering a unified i
 | **Phase 5** | ✅ Complete | 8 additional providers (Mistral, Groq, Cohere, GoogleVertex, Bedrock, Replicate, Perplexity, DeepSeek, OpenAI-Compatible) |
 | **Phase 6** | ✅ Complete | 6 additional providers (Vercel, xAI, HuggingFace, Cerebras, Fireworks, TogetherAI) |
 | **Phase 7** | ✅ Complete | 6 additional providers (AI21, Cloudflare, Baseten, Lepton, Novita, Writer) |
+| **Phase 8** | ✅ Complete | 7 additional providers (LlamaFile, Friendli, Portkey, Fal, Luma, Stability, OpenRouter) |
 
 **Test Coverage:** 182 tests passing (122 Core + 60 ASP.NET Core)
 
@@ -22,7 +23,7 @@ A comprehensive .NET SDK for integrating with AI providers, offering a unified i
 
 - **📦 Single Package** - Everything in one NuGet package, no dependency hell
 - **🚀 Idiomatic .NET** - Async/await, IAsyncEnumerable, records, dependency injection
-- **🔌 25 Providers Included** - OpenAI, Anthropic, Azure, Google, Groq, Mistral, Cohere, GoogleVertex, AmazonBedrock, Replicate, Perplexity, DeepSeek, OpenAI-Compatible, Vercel, xAI, HuggingFace, Cerebras, Fireworks, TogetherAI, AI21, Cloudflare, Baseten, Lepton, Novita, Writer
+- **🔌 32 Providers Included** - OpenAI, Anthropic, Azure, Google, Groq, Mistral, Cohere, GoogleVertex, AmazonBedrock, Replicate, Perplexity, DeepSeek, OpenAI-Compatible, Vercel, xAI, HuggingFace, Cerebras, Fireworks, TogetherAI, AI21, Cloudflare, Baseten, Lepton, Novita, Writer, LlamaFile, Friendli, Portkey, Fal, Luma, Stability, OpenRouter
 - **🌐 ASP.NET Core Ready** - DI integration, health checks, SSE streaming middleware
 - **🎯 Structured Output** - Generate typed objects with JSON schema validation
 - **⚡ Real-time Streaming** - Server-sent events for chat and completions
@@ -41,7 +42,7 @@ dotnet add package AiSdk
 dotnet add package AiSdk.AspNetCore
 ```
 
-That's it! All 25 providers are included in the single `AiSdk` package.
+That's it! All 32 providers are included in the single `AiSdk` package.
 
 ## Quick Start
 
@@ -134,7 +135,7 @@ record ChatRequest(string Message);
 
 All providers are included in the single `AiSdk` package - no need to install separate provider packages!
 
-### Language Model Providers (25 Complete / 26+ Planned)
+### Language Model Providers (32 Complete / 19+ Planned)
 
 #### Priority 1 - Major Cloud Providers (All Complete ✅)
 
@@ -181,17 +182,22 @@ All providers are included in the single `AiSdk` package - no need to install se
 | **Novita AI** | Llama 3 (8B/70B), Mistral 7B, Qwen 2 72B | ✅ Complete |
 | **Writer** | Palmyra X-004, Palmyra X-003, Palmyra-2 | ✅ Complete |
 
+#### Priority 5 - Gateways & Local Execution (All Complete ✅)
+
+| Provider | Models | Status |
+|----------|--------|--------|
+| **LlamaFile** | Local LLM execution (any llamafile model) | ✅ Complete |
+| **Friendli AI** | Mixtral 8x7B, Llama 3.1 (70B/8B) | ✅ Complete |
+| **Portkey AI Gateway** | Multi-provider routing with caching & observability | ✅ Complete |
+| **Fal AI** | Claude 3.5 Sonnet, GPT-4o, Gemini Flash, Llama 3.2 | ✅ Complete |
+| **Luma AI** | Dream Machine (future video generation) | ✅ Complete |
+| **Stability AI** | StableLM 2 12B, StableLM Zephyr 1.6B, StableLM 3B | ✅ Complete |
+| **OpenRouter** | 100+ models from all major providers | ✅ Complete |
+
 #### Planned - Additional Providers
 
 | Provider | Models | Status |
 |----------|--------|--------|
-| **LlamaFile** | Local LLM execution | 📋 Planned |
-| **Friendli AI** | Mixtral, Llama 3 | 📋 Planned |
-| **Portkey AI Gateway** | Multi-provider routing | 📋 Planned |
-| **Fal AI** | Image/Video generation models | 📋 Planned |
-| **Luma AI** | Dream Machine (video generation) | 📋 Planned |
-| **Stability AI** | Stable Diffusion, SDXL | 📋 Planned |
-| **OpenRouter** | Multi-provider routing with 100+ models | 📋 Planned |
 
 ### Other Provider Types (Future)
 
@@ -210,7 +216,7 @@ ai-sdk.net/
 │   ├── AiSdk/                       # 📦 Main package (includes everything)
 │   │   ├── Abstractions/            # Core interfaces, models, errors
 │   │   ├── Core/                    # Utilities (streaming, JSON, HTTP)
-│   │   ├── Providers/               # All 25 providers in one place
+│   │   ├── Providers/               # All 32 providers in one place
 │   │   │   ├── OpenAI/              # OpenAI (GPT-4, GPT-3.5)
 │   │   │   ├── Anthropic/           # Anthropic (Claude)
 │   │   │   ├── Azure/               # Azure OpenAI
@@ -235,7 +241,14 @@ ai-sdk.net/
 │   │   │   ├── Baseten/             # Baseten (Llama, Mistral, Mixtral)
 │   │   │   ├── Lepton/              # Lepton AI (fast inference)
 │   │   │   ├── Novita/              # Novita AI (Llama, Mistral, Qwen)
-│   │   │   └── Writer/              # Writer (Palmyra models)
+│   │   │   ├── Writer/              # Writer (Palmyra models)
+│   │   │   ├── LlamaFile/           # LlamaFile (local execution)
+│   │   │   ├── Friendli/            # Friendli AI (ultra-fast)
+│   │   │   ├── Portkey/             # Portkey AI Gateway
+│   │   │   ├── Fal/                 # Fal AI (multi-model)
+│   │   │   ├── Luma/                # Luma AI (Dream Machine)
+│   │   │   ├── Stability/           # Stability AI (StableLM)
+│   │   │   └── OpenRouter/          # OpenRouter (100+ models)
 │   │   ├── AiClient.cs              # High-level API
 │   │   └── Models/                  # Shared models
 │   └── AiSdk.AspNetCore/            # 📦 Optional web integration package
