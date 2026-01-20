@@ -54,6 +54,6 @@ public class OpenAIException : ApiCallError
     /// </summary>
     /// <param name="error">The error to check.</param>
     /// <returns>True if the error is an OpenAIException; otherwise, false.</returns>
-    public static bool IsInstance(object? error)
+    public new static bool IsInstance(object? error)
         => HasMarker(error, MarkerName);
 }

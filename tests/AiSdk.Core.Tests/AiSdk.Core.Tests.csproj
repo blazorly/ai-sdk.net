@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\AiSdk.Core\AiSdk.Core.csproj" />
+    <ProjectReference Include="..\..\src\AiSdk\AiSdk.csproj" />
   </ItemGroup>
 
 </Project>

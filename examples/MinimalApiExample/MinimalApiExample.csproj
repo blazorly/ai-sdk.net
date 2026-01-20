@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\AiSdk\AiSdk.csproj" />
-    <ProjectReference Include="..\..\src\AiSdk.Providers.OpenAI\AiSdk.Providers.OpenAI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

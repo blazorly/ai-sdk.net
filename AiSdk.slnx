@@ -1,13 +1,20 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/AiSdk.Abstractions/AiSdk.Abstractions.csproj" />
-    <Project Path="src/AiSdk.Core/AiSdk.Core.csproj" />
     <Project Path="src/AiSdk/AiSdk.csproj" />
+    <Project Path="src/AiSdk.AspNetCore/AiSdk.AspNetCore.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/AiSdk.Abstractions.Tests/AiSdk.Abstractions.Tests.csproj" />
+    <Project Path="tests/AiSdk.Core.Tests/AiSdk.Core.Tests.csproj" />
+    <Project Path="tests/AiSdk.AspNetCore.Tests/AiSdk.AspNetCore.Tests.csproj" />
   </Folder>
   <Folder Name="/examples/">
     <Project Path="examples/GettingStarted/GettingStarted.csproj" />
+    <Project Path="examples/StreamingExample/StreamingExample.csproj" />
+    <Project Path="examples/FunctionCallingExample/FunctionCallingExample.csproj" />
+    <Project Path="examples/StructuredOutputExample/StructuredOutputExample.csproj" />
+    <Project Path="examples/MinimalApiExample/MinimalApiExample.csproj" />
+    <Project Path="examples/MvcExample/MvcExample.csproj" />
+    <Project Path="examples/BlazorServerExample/BlazorServerExample.csproj" />
   </Folder>
 </Solution>

@@ -1,18 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>AI SDK for .NET - Unified interface for 31+ AI providers</Description>
-    <PackageTags>$(PackageTags);ai-sdk;generative-ai</PackageTags>
+    <Description>AI SDK for .NET - Unified interface for 31+ AI providers with all providers included</Description>
+    <PackageTags>$(PackageTags);ai-sdk;generative-ai;openai;anthropic;azure;google;groq;mistral;cohere;bedrock</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AiSdk.Abstractions\AiSdk.Abstractions.csproj" />
-    <ProjectReference Include="..\AiSdk.Core\AiSdk.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <!-- Core dependencies -->
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     <PackageReference Include="OpenTelemetry.Api" />
+
+    <!-- Dependencies from Core -->
+    <PackageReference Include="Polly.Core" />
+    <PackageReference Include="Polly.Extensions" />
+
+    <!-- Provider-specific dependencies -->
+    <PackageReference Include="AWSSDK.BedrockRuntime" />
   </ItemGroup>
 
   <ItemGroup>

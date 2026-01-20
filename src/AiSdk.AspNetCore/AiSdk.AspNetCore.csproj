@@ -7,8 +7,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AiSdk\AiSdk.csproj" />
-    <ProjectReference Include="..\AiSdk.Abstractions\AiSdk.Abstractions.csproj" />
-    <ProjectReference Include="..\AiSdk.Core\AiSdk.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

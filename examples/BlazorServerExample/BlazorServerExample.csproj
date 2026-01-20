@@ -10,7 +10,6 @@
   <ItemGroup>
     <ProjectReference Include="../../src/AiSdk/AiSdk.csproj" />
     <ProjectReference Include="../../src/AiSdk.AspNetCore/AiSdk.AspNetCore.csproj" />
-    <ProjectReference Include="../../src/AiSdk.Providers.OpenAI/AiSdk.Providers.OpenAI.csproj" />
   </ItemGroup>
 
 </Project>

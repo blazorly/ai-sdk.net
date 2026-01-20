@@ -1,8 +1,8 @@
 # AI SDK for .NET
 
-> **Status:** Phases 1-4 Complete ✅ | Actively Developed | .NET 10.0+
+> **Status:** Phases 1-5 In Progress 🚀 | Production Ready | .NET 10.0+
 
-A comprehensive .NET SDK for integrating with AI providers, offering a unified interface for language models, embeddings, structured output, and streaming.
+A comprehensive .NET SDK for integrating with AI providers, offering a unified interface for language models, embeddings, structured output, and streaming. **Single package, 9 providers included.**
 
 ## Current Status
 
@@ -12,41 +12,34 @@ A comprehensive .NET SDK for integrating with AI providers, offering a unified i
 | **Phase 2** | ✅ Complete | Core SDK + OpenAI provider |
 | **Phase 3** | ✅ Complete | Anthropic, Azure, Google providers + examples |
 | **Phase 4** | ✅ Complete | ASP.NET Core integration + web examples |
-| **Phase 5** | 📋 Planned | Additional providers (Mistral, Groq, Cohere, etc.) |
+| **Phase 5** | 🚧 In Progress | 5 additional providers (Mistral, Groq, Cohere, GoogleVertex, Bedrock) |
 
 **Test Coverage:** 182 tests passing (122 Core + 60 ASP.NET Core)
 
 ## Features
 
+- **📦 Single Package** - Everything in one NuGet package, no dependency hell
 - **🚀 Idiomatic .NET** - Async/await, IAsyncEnumerable, records, dependency injection
-- **🔌 Multiple Providers** - OpenAI, Anthropic (Claude), Azure OpenAI, Google (Gemini)
-- **📦 ASP.NET Core Ready** - DI integration, health checks, SSE streaming middleware
+- **🔌 9 Providers Included** - OpenAI, Anthropic, Azure, Google, Groq, Mistral, Cohere, GoogleVertex, AmazonBedrock
+- **🌐 ASP.NET Core Ready** - DI integration, health checks, SSE streaming middleware
 - **🎯 Structured Output** - Generate typed objects with JSON schema validation
 - **⚡ Real-time Streaming** - Server-sent events for chat and completions
 - **🧪 Fully Tested** - Comprehensive test suite with 100% pass rate
-- **📖 Production Ready** - Error handling, telemetry, logging, cancellation tokens
+- **📖 Production Ready** - Timeout enforcement, unified error handling, real health checks
 
 ## Installation
 
-### Core SDK + Providers
+### Simplified Installation - One Package for Everything
 
 ```bash
-# Core abstractions and utilities
-dotnet add package AiSdk.Abstractions
-dotnet add package AiSdk.Core
+# Single package includes all providers
+dotnet add package AiSdk
 
-# Provider packages (choose one or more)
-dotnet add package AiSdk.Providers.OpenAI
-dotnet add package AiSdk.Providers.Anthropic
-dotnet add package AiSdk.Providers.Azure
-dotnet add package AiSdk.Providers.Google
-```
-
-### ASP.NET Core Integration
-
-```bash
+# Optional: ASP.NET Core integration (if building web apps)
 dotnet add package AiSdk.AspNetCore
 ```
+
+That's it! All 9 providers are included in the single `AiSdk` package.
 
 ## Quick Start
 
@@ -135,32 +128,57 @@ app.Run();
 record ChatRequest(string Message);
 ```
 
-## Supported Providers
+## Included Providers
 
-### Currently Available (Phase 1-4)
-- ✅ **OpenAI** - GPT-4, GPT-3.5, GPT-4 Turbo
-- ✅ **Anthropic** - Claude 3.5 Sonnet, Claude 3 Opus/Sonnet/Haiku
-- ✅ **Azure OpenAI** - Azure-hosted GPT models
-- ✅ **Google** - Gemini 1.5 Pro/Flash, Gemini 2.0
+All providers are included in the single `AiSdk` package - no need to install separate provider packages!
 
-### Coming Soon (Phase 5+)
-- 📋 Mistral, Groq, Cohere, Perplexity
-- 📋 Amazon Bedrock (multi-provider aggregator)
-- 📋 Google Vertex AI (multi-provider aggregator)
+### Language Model Providers (9 providers)
+
+| Provider | Models | Status |
+|----------|--------|--------|
+| **OpenAI** | GPT-4, GPT-4 Turbo, GPT-3.5 | ✅ Complete |
+| **Anthropic** | Claude 3.5 Sonnet, Claude 3 Opus/Sonnet/Haiku | ✅ Complete |
+| **Azure OpenAI** | Azure-hosted GPT models | ✅ Complete |
+| **Google Gemini** | Gemini 1.5 Pro, Gemini 1.5 Flash, Gemini 2.0 | ✅ Complete |
+| **Groq** | Llama 3.1 (70B/8B), Mixtral 8x7B, Gemma 7B | ✅ Complete |
+| **Mistral** | Mistral Large, Mistral Medium, Mixtral | ✅ Complete |
+| **Cohere** | Command R+, Command R, Command | ✅ Complete |
+| **Google Vertex AI** | Gemini + Claude on GCP | ✅ Complete |
+| **Amazon Bedrock** | Multi-provider (Anthropic, Meta, Amazon Titan, etc.) | ✅ Complete |
+
+### Coming Soon
+- 📋 Replicate, Perplexity, DeepSeek
 - 📋 Audio providers (Deepgram, ElevenLabs, AssemblyAI)
+- 📋 Embedding providers
+- 📋 Image generation providers
 
 ## Project Structure
+
+**Monorepo Design** - Single package, organized codebase:
 
 ```
 ai-sdk.net/
 ├── src/
-│   ├── AiSdk.Abstractions/          # Core interfaces (ILanguageModel, etc.)
-│   ├── AiSdk.Core/                  # Utilities (streaming, JSON, SSE parsing)
-│   ├── AiSdk.AspNetCore/            # ASP.NET Core integration
-│   ├── AiSdk.Providers.OpenAI/      # OpenAI provider
-│   ├── AiSdk.Providers.Anthropic/   # Anthropic (Claude) provider
-│   ├── AiSdk.Providers.Azure/       # Azure OpenAI provider
-│   └── AiSdk.Providers.Google/      # Google (Gemini) provider
+│   ├── AiSdk/                       # 📦 Main package (includes everything)
+│   │   ├── Abstractions/            # Core interfaces, models, errors
+│   │   ├── Core/                    # Utilities (streaming, JSON, HTTP)
+│   │   ├── Providers/               # All 9 providers in one place
+│   │   │   ├── OpenAI/              # OpenAI (GPT-4, GPT-3.5)
+│   │   │   ├── Anthropic/           # Anthropic (Claude)
+│   │   │   ├── Azure/               # Azure OpenAI
+│   │   │   ├── Google/              # Google Gemini
+│   │   │   ├── Groq/                # Groq (Llama 3.1, Mixtral)
+│   │   │   ├── Mistral/             # Mistral AI
+│   │   │   ├── Cohere/              # Cohere
+│   │   │   ├── GoogleVertex/        # Google Vertex AI
+│   │   │   └── AmazonBedrock/       # Amazon Bedrock
+│   │   ├── AiClient.cs              # High-level API
+│   │   └── Models/                  # Shared models
+│   └── AiSdk.AspNetCore/            # 📦 Optional web integration package
+│       ├── Configuration/
+│       ├── Extensions/
+│       ├── HealthChecks/
+│       └── Middleware/
 ├── tests/
 │   ├── AiSdk.Abstractions.Tests/    # 4 tests
 │   ├── AiSdk.Core.Tests/            # 118 tests
@@ -174,6 +192,12 @@ ai-sdk.net/
     ├── MvcExample/                  # ASP.NET Core MVC
     └── BlazorServerExample/         # Blazor Server with SignalR
 ```
+
+**Benefits of Monorepo Structure:**
+- 📦 Single package to install
+- 🔄 Easier version management
+- 🚀 All providers always compatible
+- 📝 Simpler maintenance
 
 ## Example Applications
 
@@ -210,6 +234,59 @@ cd examples/MvcExample && dotnet run
 cd examples/BlazorServerExample && dotnet run
 # Visit: http://localhost:5002
 ```
+
+## Using Different Providers
+
+All providers are included - just switch the namespace:
+
+```csharp
+// OpenAI
+using AiSdk.Providers.OpenAI;
+var provider = new OpenAIProvider(new OpenAIConfiguration { ApiKey = "..." });
+var model = provider.GPT4();
+
+// Anthropic (Claude)
+using AiSdk.Providers.Anthropic;
+var provider = new AnthropicProvider(new AnthropicConfiguration { ApiKey = "..." });
+var model = provider.Claude35Sonnet();
+
+// Google Gemini
+using AiSdk.Providers.Google;
+var provider = new GoogleProvider(new GoogleConfiguration { ApiKey = "..." });
+var model = provider.Gemini15Pro();
+
+// Groq (ultra-fast inference)
+using AiSdk.Providers.Groq;
+var provider = new GroqProvider(new GroqConfiguration { ApiKey = "..." });
+var model = provider.Llama3_1_70B();
+
+// Mistral
+using AiSdk.Providers.Mistral;
+var provider = new MistralProvider(new MistralConfiguration { ApiKey = "..." });
+var model = provider.MistralLarge();
+
+// Cohere
+using AiSdk.Providers.Cohere;
+var provider = new CohereProvider(new CohereConfiguration { ApiKey = "..." });
+var model = provider.CommandRPlus();
+
+// Azure OpenAI
+using AiSdk.Providers.Azure;
+var provider = new AzureOpenAIProvider(new AzureOpenAIConfiguration { ... });
+var model = provider.ChatModel("deployment-name");
+
+// Google Vertex AI (on GCP)
+using AiSdk.Providers.GoogleVertex;
+var provider = new GoogleVertexProvider(new GoogleVertexConfiguration { ... });
+var model = provider.Gemini15Pro();
+
+// Amazon Bedrock (multi-provider)
+using AiSdk.Providers.AmazonBedrock;
+var provider = new AmazonBedrockProvider(new AmazonBedrockConfiguration { ... });
+var model = provider.Claude35Sonnet();  // or Llama3, TitanText, etc.
+```
+
+All providers implement the same `ILanguageModel` interface, so you can easily switch between them.
 
 ## Advanced Features
 
@@ -328,17 +405,35 @@ dotnet run
 
 See [DOTNET_PORTING_PLAN.md](../DOTNET_PORTING_PLAN.md) for the complete implementation plan.
 
-**Next Up (Phase 5):**
-- Mistral, Groq, Cohere providers
-- Amazon Bedrock (multi-provider aggregator)
-- Google Vertex AI (multi-provider aggregator)
+**Phase 5 (In Progress):**
+- ✅ Groq provider (Llama 3.1, Mixtral, Gemma)
+- ✅ Mistral provider (Mistral Large, Medium, Mixtral)
+- ✅ Cohere provider (Command R+, Command R)
+- ✅ Google Vertex AI provider
+- ✅ Amazon Bedrock provider (multi-model aggregator)
+
+**Next Up (Phase 6):**
 - Audio providers (Deepgram, ElevenLabs, AssemblyAI)
+- Embedding support
+- Image generation support
+- Enhanced telemetry with OpenTelemetry
+
+## Package Information
+
+| Package | Description | Size |
+|---------|-------------|------|
+| **AiSdk** | Core SDK + all 9 providers | Single DLL |
+| **AiSdk.AspNetCore** | Optional ASP.NET Core integration | Lightweight |
+
+**Why Single Package?**
+- ✅ Simpler dependency management
+- ✅ All providers always version-compatible
+- ✅ Easier to maintain and update
+- ✅ No "which package do I need?" confusion
+- ✅ Better for monorepo/enterprise scenarios
 
 ## License
 
 Apache-2.0
 
-## Acknowledgments
-
-This project is a .NET port of the [Vercel AI SDK](https://sdk.vercel.ai), bringing the excellent TypeScript SDK to the .NET ecosystem.
 
