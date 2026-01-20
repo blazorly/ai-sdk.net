@@ -1,0 +1,250 @@
+@page "/"
+@using AiSdk
+@using AiSdk.Abstractions
+@using BlazorServerExample.Models
+@using BlazorServerExample.Components
+@using Microsoft.AspNetCore.Components.Web
+@inject ILanguageModel LanguageModel
+@rendermode @(new InteractiveServerRenderMode())
+
+<Microsoft.AspNetCore.Components.Web.PageTitle>AI Chat - Blazor Server Example</Microsoft.AspNetCore.Components.Web.PageTitle>
+
+<div class="chat-container">
+    <div class="chat-header">
+        <h1>AI Chat Assistant</h1>
+        <p class="chat-subtitle">Real-time streaming powered by AiSdk</p>
+    </div>
+
+    <div class="chat-messages" @ref="messagesContainer">
+        @if (!messages.Any())
+        {
+            <div class="welcome-message">
+                <div class="welcome-icon">💬</div>
+                <h2>Welcome to AI Chat!</h2>
+                <p>Start a conversation with the AI assistant. Messages will stream in real-time.</p>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <span class="feature-icon">⚡</span>
+                        <span>Real-time streaming responses</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🔄</span>
+                        <span>Bidirectional SignalR communication</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🎨</span>
+                        <span>Modern, responsive UI</span>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            @foreach (var message in messages)
+            {
+                <MessageBubble Message="message" />
+            }
+
+            @if (isStreaming)
+            {
+                <div class="message-bubble assistant-message streaming">
+                    <div class="message-header">
+                        <span class="message-role">Assistant</span>
+                        <span class="typing-indicator">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </span>
+                    </div>
+                    <div class="message-content">
+                        @streamingContent
+                        <span class="cursor">|</span>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    <div class="chat-input-container">
+        @if (!string.IsNullOrWhiteSpace(errorMessage))
+        {
+            <div class="error-message">
+                <span class="error-icon">⚠️</span>
+                <span>@errorMessage</span>
+                <button class="error-close" @onclick="ClearError">×</button>
+            </div>
+        }
+
+        <div class="chat-input-wrapper">
+            <textarea
+                class="chat-input"
+                placeholder="Type your message..."
+                @bind="userInput"
+                @onkeydown="HandleKeyDown"
+                disabled="@isStreaming"
+                rows="1"></textarea>
+            <button
+                class="send-button @(isStreaming ? "disabled" : "")"
+                @onclick="SendMessage"
+                disabled="@(isStreaming || string.IsNullOrWhiteSpace(userInput))">
+                @if (isStreaming)
+                {
+                    <span class="loading-spinner"></span>
+                }
+                else
+                {
+                    <span class="send-icon">➤</span>
+                }
+            </button>
+        </div>
+        <div class="chat-footer">
+            <span class="message-count">@messages.Count message@(messages.Count != 1 ? "s" : "")</span>
+            @if (messages.Any())
+            {
+                <button class="clear-button" @onclick="ClearChat" disabled="@isStreaming">
+                    Clear Chat
+                </button>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<ChatMessage> messages = new();
+    private string userInput = string.Empty;
+    private string streamingContent = string.Empty;
+    private bool isStreaming = false;
+    private string errorMessage = string.Empty;
+    private ElementReference messagesContainer;
+
+    /// <summary>
+    /// Sends a user message and processes the AI response with streaming.
+    /// </summary>
+    private async Task SendMessage()
+    {
+        if (string.IsNullOrWhiteSpace(userInput) || isStreaming)
+            return;
+
+        try
+        {
+            // Clear any previous errors
+            errorMessage = string.Empty;
+
+            // Add user message
+            var userMessage = new ChatMessage
+            {
+                Role = "user",
+                Content = userInput,
+                Timestamp = DateTime.UtcNow
+            };
+            messages.Add(userMessage);
+
+            // Clear input and prepare for streaming
+            var currentInput = userInput;
+            userInput = string.Empty;
+            streamingContent = string.Empty;
+            isStreaming = true;
+
+            // Force UI update
+            StateHasChanged();
+            await ScrollToBottom();
+
+            // Build request with conversation history
+            var callOptions = new LanguageModelCallOptions
+            {
+                Messages = messages.Select(m => new Message(
+                    Role: m.Role == "user" ? MessageRole.User : MessageRole.Assistant,
+                    Content: m.Content
+                )).ToList()
+            };
+
+            // Stream the response
+            var assistantContent = new System.Text.StringBuilder();
+
+            await foreach (var chunk in LanguageModel.StreamAsync(callOptions))
+            {
+                if (chunk.Type == ChunkType.TextDelta && !string.IsNullOrEmpty(chunk.Delta))
+                {
+                    assistantContent.Append(chunk.Delta);
+                    streamingContent = assistantContent.ToString();
+
+                    // Update UI in real-time
+                    StateHasChanged();
+                    await ScrollToBottom();
+                }
+
+                // Small delay to prevent overwhelming the UI
+                await Task.Delay(10);
+            }
+
+            // Add complete assistant message
+            var assistantMessage = new ChatMessage
+            {
+                Role = "assistant",
+                Content = assistantContent.ToString(),
+                Timestamp = DateTime.UtcNow
+            };
+            messages.Add(assistantMessage);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            isStreaming = false;
+            streamingContent = string.Empty;
+            StateHasChanged();
+            await ScrollToBottom();
+        }
+    }
+
+    /// <summary>
+    /// Handles keyboard shortcuts (Enter to send, Shift+Enter for new line).
+    /// </summary>
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !e.ShiftKey)
+        {
+            await SendMessage();
+        }
+    }
+
+    /// <summary>
+    /// Clears the chat history.
+    /// </summary>
+    private void ClearChat()
+    {
+        if (!isStreaming)
+        {
+            messages.Clear();
+            userInput = string.Empty;
+            errorMessage = string.Empty;
+            StateHasChanged();
+        }
+    }
+
+    /// <summary>
+    /// Clears the error message.
+    /// </summary>
+    private void ClearError()
+    {
+        errorMessage = string.Empty;
+    }
+
+    /// <summary>
+    /// Scrolls the chat messages to the bottom.
+    /// </summary>
+    private async Task ScrollToBottom()
+    {
+        try
+        {
+            // Use JavaScript interop to scroll (would need to add JS, simplified here)
+            await Task.Delay(50); // Small delay for DOM update
+        }
+        catch
+        {
+            // Ignore scrolling errors
+        }
+    }
+}

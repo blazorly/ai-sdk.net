@@ -1,0 +1,16 @@
+@using BlazorServerExample.Models
+
+<div class="message-bubble @(Message.IsUser ? "user-message" : "assistant-message")">
+    <div class="message-header">
+        <span class="message-role">@(Message.IsUser ? "You" : "Assistant")</span>
+        <span class="message-timestamp">@Message.Timestamp.ToLocalTime().ToString("HH:mm:ss")</span>
+    </div>
+    <div class="message-content">
+        @Message.Content
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public ChatMessage Message { get; set; } = null!;
+}

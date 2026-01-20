@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AiSdk.Abstractions/AiSdk.Abstractions.csproj" />
+    <Project Path="src/AiSdk.Core/AiSdk.Core.csproj" />
+    <Project Path="src/AiSdk/AiSdk.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/AiSdk.Abstractions.Tests/AiSdk.Abstractions.Tests.csproj" />
+  </Folder>
+  <Folder Name="/examples/">
+    <Project Path="examples/GettingStarted/GettingStarted.csproj" />
+  </Folder>
+</Solution>
