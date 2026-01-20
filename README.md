@@ -1,8 +1,8 @@
 # AI SDK for .NET
 
-> **Status:** Phases 1-5 In Progress 🚀 | Production Ready | .NET 10.0+
+> **Status:** Phases 1-6 Complete ✅ | Production Ready | .NET 10.0+
 
-A comprehensive .NET SDK for integrating with AI providers, offering a unified interface for language models, embeddings, structured output, and streaming. **Single package, 9 providers included.**
+A comprehensive .NET SDK for integrating with AI providers, offering a unified interface for language models, embeddings, structured output, and streaming. **Single package, 19 providers included.**
 
 ## Current Status
 
@@ -12,7 +12,8 @@ A comprehensive .NET SDK for integrating with AI providers, offering a unified i
 | **Phase 2** | ✅ Complete | Core SDK + OpenAI provider |
 | **Phase 3** | ✅ Complete | Anthropic, Azure, Google providers + examples |
 | **Phase 4** | ✅ Complete | ASP.NET Core integration + web examples |
-| **Phase 5** | 🚧 In Progress | 5 additional providers (Mistral, Groq, Cohere, GoogleVertex, Bedrock) |
+| **Phase 5** | ✅ Complete | 8 additional providers (Mistral, Groq, Cohere, GoogleVertex, Bedrock, Replicate, Perplexity, DeepSeek, OpenAI-Compatible) |
+| **Phase 6** | ✅ Complete | 6 additional providers (Vercel, xAI, HuggingFace, Cerebras, Fireworks, TogetherAI) |
 
 **Test Coverage:** 182 tests passing (122 Core + 60 ASP.NET Core)
 
@@ -20,7 +21,7 @@ A comprehensive .NET SDK for integrating with AI providers, offering a unified i
 
 - **📦 Single Package** - Everything in one NuGet package, no dependency hell
 - **🚀 Idiomatic .NET** - Async/await, IAsyncEnumerable, records, dependency injection
-- **🔌 9 Providers Included** - OpenAI, Anthropic, Azure, Google, Groq, Mistral, Cohere, GoogleVertex, AmazonBedrock
+- **🔌 19 Providers Included** - OpenAI, Anthropic, Azure, Google, Groq, Mistral, Cohere, GoogleVertex, AmazonBedrock, Replicate, Perplexity, DeepSeek, OpenAI-Compatible, Vercel, xAI, HuggingFace, Cerebras, Fireworks, TogetherAI
 - **🌐 ASP.NET Core Ready** - DI integration, health checks, SSE streaming middleware
 - **🎯 Structured Output** - Generate typed objects with JSON schema validation
 - **⚡ Real-time Streaming** - Server-sent events for chat and completions
@@ -39,7 +40,7 @@ dotnet add package AiSdk
 dotnet add package AiSdk.AspNetCore
 ```
 
-That's it! All 9 providers are included in the single `AiSdk` package.
+That's it! All 19 providers are included in the single `AiSdk` package.
 
 ## Quick Start
 
@@ -132,25 +133,66 @@ record ChatRequest(string Message);
 
 All providers are included in the single `AiSdk` package - no need to install separate provider packages!
 
-### Language Model Providers (9 providers)
+### Language Model Providers (19 Complete / 32+ Planned)
+
+#### Priority 1 - Major Cloud Providers (All Complete ✅)
 
 | Provider | Models | Status |
 |----------|--------|--------|
-| **OpenAI** | GPT-4, GPT-4 Turbo, GPT-3.5 | ✅ Complete |
+| **OpenAI** | GPT-4o, GPT-4 Turbo, GPT-3.5, o1 | ✅ Complete |
 | **Anthropic** | Claude 3.5 Sonnet, Claude 3 Opus/Sonnet/Haiku | ✅ Complete |
 | **Azure OpenAI** | Azure-hosted GPT models | ✅ Complete |
-| **Google Gemini** | Gemini 1.5 Pro, Gemini 1.5 Flash, Gemini 2.0 | ✅ Complete |
-| **Groq** | Llama 3.1 (70B/8B), Mixtral 8x7B, Gemma 7B | ✅ Complete |
-| **Mistral** | Mistral Large, Mistral Medium, Mixtral | ✅ Complete |
-| **Cohere** | Command R+, Command R, Command | ✅ Complete |
+| **Google Gemini** | Gemini 1.5 Pro/Flash, Gemini 2.0 Flash | ✅ Complete |
 | **Google Vertex AI** | Gemini + Claude on GCP | ✅ Complete |
 | **Amazon Bedrock** | Multi-provider (Anthropic, Meta, Amazon Titan, etc.) | ✅ Complete |
 
-### Coming Soon
-- 📋 Replicate, Perplexity, DeepSeek
-- 📋 Audio providers (Deepgram, ElevenLabs, AssemblyAI)
-- 📋 Embedding providers
-- 📋 Image generation providers
+#### Priority 2 - Fast Inference & Aggregators (All Complete ✅)
+
+| Provider | Models | Status |
+|----------|--------|--------|
+| **Groq** | Llama 3.1 (70B/8B), Mixtral 8x7B, Gemma 7B | ✅ Complete |
+| **Cerebras** | Llama 3.3 70B, Llama 3.1 (70B/8B) - Ultra-fast | ✅ Complete |
+| **Fireworks** | Llama 3.1/3.3, FireFunction V2, Qwen 2.5, Mixtral, DeepSeek V3 | ✅ Complete |
+| **TogetherAI** | 200+ models (Llama, Qwen, Mixtral, DeepSeek, etc.) | ✅ Complete |
+| **Vercel AI Gateway** | Multi-provider gateway (OpenAI, Anthropic, Google, etc.) | ✅ Complete |
+
+#### Priority 3 - Specialized & Ecosystem (All Complete ✅)
+
+| Provider | Models | Status |
+|----------|--------|--------|
+| **Mistral** | Mistral Large 2, Mistral Medium, Mixtral 8x7B/8x22B | ✅ Complete |
+| **Cohere** | Command R+, Command R, Command | ✅ Complete |
+| **Perplexity** | Sonar models (online search), Llama 3.1 (8B/70B) | ✅ Complete |
+| **DeepSeek** | DeepSeek Chat, DeepSeek Coder, DeepSeek Reasoner (R1) | ✅ Complete |
+| **xAI (Grok)** | Grok-4, Grok-3, Grok-2-vision, Grok-2-image | ✅ Complete |
+| **HuggingFace** | 10,000+ models (Llama2, Mistral7B, Mixtral8x7B, etc.) | ✅ Complete |
+| **Replicate** | Llama 2 (70B/13B), Mixtral 8x7B, Mistral 7B | ✅ Complete |
+| **OpenAI-Compatible** | Universal (Ollama, LocalAI, vLLM, LM Studio, Groq, etc.) | ✅ Complete |
+
+#### Planned - Additional Providers
+
+| Provider | Models | Status |
+|----------|--------|--------|
+| **AI21 Labs** | Jamba 1.5 Large/Mini, Jurassic-2 | 📋 Planned |
+| **Cloudflare Workers AI** | Llama 3, Mistral 7B, Neural Chat 7B | 📋 Planned |
+| **Baseten** | Llama 3, Mistral 7B, WizardLM, Mixtral | 📋 Planned |
+| **Lepton AI** | Llama 3, Mixtral, Wizard 2, DBRX | 📋 Planned |
+| **Novita AI** | Llama 3, Mistral, Qwen | 📋 Planned |
+| **Writer** | Palmyra models | 📋 Planned |
+| **LlamaFile** | Local LLM execution | 📋 Planned |
+| **Friendli AI** | Mixtral, Llama 3 | 📋 Planned |
+| **Portkey AI Gateway** | Multi-provider routing | 📋 Planned |
+| **Fal AI** | Image/Video generation models | 📋 Planned |
+| **Luma AI** | Dream Machine (video generation) | 📋 Planned |
+| **Stability AI** | Stable Diffusion, SDXL | 📋 Planned |
+| **OpenRouter** | Multi-provider routing with 100+ models | 📋 Planned |
+
+### Other Provider Types (Future)
+
+- 📋 **Audio Providers**: Deepgram, ElevenLabs, AssemblyAI, Azure Speech
+- 📋 **Embedding Providers**: OpenAI Embeddings, Cohere Embed, Voyage AI
+- 📋 **Image Generation**: Stability AI, DALL-E, Midjourney API
+- 📋 **Video Generation**: Runway, Luma AI
 
 ## Project Structure
 
@@ -162,7 +204,7 @@ ai-sdk.net/
 │   ├── AiSdk/                       # 📦 Main package (includes everything)
 │   │   ├── Abstractions/            # Core interfaces, models, errors
 │   │   ├── Core/                    # Utilities (streaming, JSON, HTTP)
-│   │   ├── Providers/               # All 9 providers in one place
+│   │   ├── Providers/               # All 19 providers in one place
 │   │   │   ├── OpenAI/              # OpenAI (GPT-4, GPT-3.5)
 │   │   │   ├── Anthropic/           # Anthropic (Claude)
 │   │   │   ├── Azure/               # Azure OpenAI
@@ -171,7 +213,17 @@ ai-sdk.net/
 │   │   │   ├── Mistral/             # Mistral AI
 │   │   │   ├── Cohere/              # Cohere
 │   │   │   ├── GoogleVertex/        # Google Vertex AI
-│   │   │   └── AmazonBedrock/       # Amazon Bedrock
+│   │   │   ├── AmazonBedrock/       # Amazon Bedrock
+│   │   │   ├── Replicate/           # Replicate (Llama 2, Mixtral)
+│   │   │   ├── Perplexity/          # Perplexity (Sonar online search)
+│   │   │   ├── DeepSeek/            # DeepSeek (Chat, Coder, Reasoner)
+│   │   │   ├── OpenAICompatible/    # Universal OpenAI-compatible
+│   │   │   ├── Vercel/              # Vercel AI Gateway
+│   │   │   ├── XAI/                 # xAI (Grok)
+│   │   │   ├── HuggingFace/         # HuggingFace Inference API
+│   │   │   ├── Cerebras/            # Cerebras (ultra-fast)
+│   │   │   ├── Fireworks/           # Fireworks AI
+│   │   │   └── TogetherAI/          # Together AI (200+ models)
 │   │   ├── AiClient.cs              # High-level API
 │   │   └── Models/                  # Shared models
 │   └── AiSdk.AspNetCore/            # 📦 Optional web integration package
@@ -284,6 +336,26 @@ var model = provider.Gemini15Pro();
 using AiSdk.Providers.AmazonBedrock;
 var provider = new AmazonBedrockProvider(new AmazonBedrockConfiguration { ... });
 var model = provider.Claude35Sonnet();  // or Llama3, TitanText, etc.
+
+// Replicate
+using AiSdk.Providers.Replicate;
+var provider = new ReplicateProvider(new ReplicateConfiguration { ApiKey = "..." });
+var model = provider.Llama2_70B();
+
+// Perplexity (online search)
+using AiSdk.Providers.Perplexity;
+var provider = new PerplexityProvider(new PerplexityConfiguration { ApiKey = "..." });
+var model = provider.SonarLargeOnline();
+
+// DeepSeek (code & reasoning)
+using AiSdk.Providers.DeepSeek;
+var provider = new DeepSeekProvider(new DeepSeekConfiguration { ApiKey = "..." });
+var model = provider.Coder();  // or Chat(), Reasoner()
+
+// OpenAI-Compatible (Ollama, LocalAI, vLLM, LM Studio)
+using AiSdk.Providers.OpenAICompatible;
+var model = OpenAICompatibleProvider.ForOllama("llama2");
+// or ForLocalAI(), ForVLLM(), ForLMStudio(), or custom endpoint
 ```
 
 All providers implement the same `ILanguageModel` interface, so you can easily switch between them.
@@ -405,12 +477,16 @@ dotnet run
 
 See [DOTNET_PORTING_PLAN.md](../DOTNET_PORTING_PLAN.md) for the complete implementation plan.
 
-**Phase 5 (In Progress):**
+**Phase 5 (Complete):**
 - ✅ Groq provider (Llama 3.1, Mixtral, Gemma)
 - ✅ Mistral provider (Mistral Large, Medium, Mixtral)
 - ✅ Cohere provider (Command R+, Command R)
 - ✅ Google Vertex AI provider
 - ✅ Amazon Bedrock provider (multi-model aggregator)
+- ✅ Replicate provider (Llama 2, Mixtral, Mistral)
+- ✅ Perplexity provider (Sonar online search models)
+- ✅ DeepSeek provider (Chat, Coder, Reasoner R1)
+- ✅ OpenAI-Compatible provider (universal connector)
 
 **Next Up (Phase 6):**
 - Audio providers (Deepgram, ElevenLabs, AssemblyAI)
@@ -422,7 +498,7 @@ See [DOTNET_PORTING_PLAN.md](../DOTNET_PORTING_PLAN.md) for the complete impleme
 
 | Package | Description | Size |
 |---------|-------------|------|
-| **AiSdk** | Core SDK + all 9 providers | Single DLL |
+| **AiSdk** | Core SDK + all 13 providers | Single DLL |
 | **AiSdk.AspNetCore** | Optional ASP.NET Core integration | Lightweight |
 
 **Why Single Package?**
