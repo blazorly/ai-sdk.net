@@ -1,8 +1,8 @@
 # AI SDK for .NET
 
-> **Status:** Phases 1-6 Complete ✅ | Production Ready | .NET 10.0+
+> **Status:** Phases 1-7 Complete ✅ | Production Ready | .NET 10.0+
 
-A comprehensive .NET SDK for integrating with AI providers, offering a unified interface for language models, embeddings, structured output, and streaming. **Single package, 19 providers included.**
+A comprehensive .NET SDK for integrating with AI providers, offering a unified interface for language models, embeddings, structured output, and streaming. **Single package, 25 providers included.**
 
 ## Current Status
 
@@ -14,6 +14,7 @@ A comprehensive .NET SDK for integrating with AI providers, offering a unified i
 | **Phase 4** | ✅ Complete | ASP.NET Core integration + web examples |
 | **Phase 5** | ✅ Complete | 8 additional providers (Mistral, Groq, Cohere, GoogleVertex, Bedrock, Replicate, Perplexity, DeepSeek, OpenAI-Compatible) |
 | **Phase 6** | ✅ Complete | 6 additional providers (Vercel, xAI, HuggingFace, Cerebras, Fireworks, TogetherAI) |
+| **Phase 7** | ✅ Complete | 6 additional providers (AI21, Cloudflare, Baseten, Lepton, Novita, Writer) |
 
 **Test Coverage:** 182 tests passing (122 Core + 60 ASP.NET Core)
 
@@ -21,7 +22,7 @@ A comprehensive .NET SDK for integrating with AI providers, offering a unified i
 
 - **📦 Single Package** - Everything in one NuGet package, no dependency hell
 - **🚀 Idiomatic .NET** - Async/await, IAsyncEnumerable, records, dependency injection
-- **🔌 19 Providers Included** - OpenAI, Anthropic, Azure, Google, Groq, Mistral, Cohere, GoogleVertex, AmazonBedrock, Replicate, Perplexity, DeepSeek, OpenAI-Compatible, Vercel, xAI, HuggingFace, Cerebras, Fireworks, TogetherAI
+- **🔌 25 Providers Included** - OpenAI, Anthropic, Azure, Google, Groq, Mistral, Cohere, GoogleVertex, AmazonBedrock, Replicate, Perplexity, DeepSeek, OpenAI-Compatible, Vercel, xAI, HuggingFace, Cerebras, Fireworks, TogetherAI, AI21, Cloudflare, Baseten, Lepton, Novita, Writer
 - **🌐 ASP.NET Core Ready** - DI integration, health checks, SSE streaming middleware
 - **🎯 Structured Output** - Generate typed objects with JSON schema validation
 - **⚡ Real-time Streaming** - Server-sent events for chat and completions
@@ -40,7 +41,7 @@ dotnet add package AiSdk
 dotnet add package AiSdk.AspNetCore
 ```
 
-That's it! All 19 providers are included in the single `AiSdk` package.
+That's it! All 25 providers are included in the single `AiSdk` package.
 
 ## Quick Start
 
@@ -133,7 +134,7 @@ record ChatRequest(string Message);
 
 All providers are included in the single `AiSdk` package - no need to install separate provider packages!
 
-### Language Model Providers (19 Complete / 32+ Planned)
+### Language Model Providers (25 Complete / 26+ Planned)
 
 #### Priority 1 - Major Cloud Providers (All Complete ✅)
 
@@ -169,16 +170,21 @@ All providers are included in the single `AiSdk` package - no need to install se
 | **Replicate** | Llama 2 (70B/13B), Mixtral 8x7B, Mistral 7B | ✅ Complete |
 | **OpenAI-Compatible** | Universal (Ollama, LocalAI, vLLM, LM Studio, Groq, etc.) | ✅ Complete |
 
+#### Priority 4 - Specialized Infrastructure (All Complete ✅)
+
+| Provider | Models | Status |
+|----------|--------|--------|
+| **AI21 Labs** | Jamba 1.5 Large/Mini, Jurassic-2 Ultra/Mid | ✅ Complete |
+| **Cloudflare Workers AI** | Llama 3 (8B/70B), Mistral 7B, Neural Chat 7B | ✅ Complete |
+| **Baseten** | Llama 3 (8B/70B), Mistral 7B, WizardLM-2 8x22B, Mixtral 8x7B | ✅ Complete |
+| **Lepton AI** | Llama 3 (8B/70B), Mixtral 8x7B, WizardLM-2 7B, DBRX | ✅ Complete |
+| **Novita AI** | Llama 3 (8B/70B), Mistral 7B, Qwen 2 72B | ✅ Complete |
+| **Writer** | Palmyra X-004, Palmyra X-003, Palmyra-2 | ✅ Complete |
+
 #### Planned - Additional Providers
 
 | Provider | Models | Status |
 |----------|--------|--------|
-| **AI21 Labs** | Jamba 1.5 Large/Mini, Jurassic-2 | 📋 Planned |
-| **Cloudflare Workers AI** | Llama 3, Mistral 7B, Neural Chat 7B | 📋 Planned |
-| **Baseten** | Llama 3, Mistral 7B, WizardLM, Mixtral | 📋 Planned |
-| **Lepton AI** | Llama 3, Mixtral, Wizard 2, DBRX | 📋 Planned |
-| **Novita AI** | Llama 3, Mistral, Qwen | 📋 Planned |
-| **Writer** | Palmyra models | 📋 Planned |
 | **LlamaFile** | Local LLM execution | 📋 Planned |
 | **Friendli AI** | Mixtral, Llama 3 | 📋 Planned |
 | **Portkey AI Gateway** | Multi-provider routing | 📋 Planned |
@@ -204,7 +210,7 @@ ai-sdk.net/
 │   ├── AiSdk/                       # 📦 Main package (includes everything)
 │   │   ├── Abstractions/            # Core interfaces, models, errors
 │   │   ├── Core/                    # Utilities (streaming, JSON, HTTP)
-│   │   ├── Providers/               # All 19 providers in one place
+│   │   ├── Providers/               # All 25 providers in one place
 │   │   │   ├── OpenAI/              # OpenAI (GPT-4, GPT-3.5)
 │   │   │   ├── Anthropic/           # Anthropic (Claude)
 │   │   │   ├── Azure/               # Azure OpenAI
@@ -223,7 +229,13 @@ ai-sdk.net/
 │   │   │   ├── HuggingFace/         # HuggingFace Inference API
 │   │   │   ├── Cerebras/            # Cerebras (ultra-fast)
 │   │   │   ├── Fireworks/           # Fireworks AI
-│   │   │   └── TogetherAI/          # Together AI (200+ models)
+│   │   │   ├── TogetherAI/          # Together AI (200+ models)
+│   │   │   ├── AI21/                # AI21 Labs (Jamba, Jurassic-2)
+│   │   │   ├── Cloudflare/          # Cloudflare Workers AI
+│   │   │   ├── Baseten/             # Baseten (Llama, Mistral, Mixtral)
+│   │   │   ├── Lepton/              # Lepton AI (fast inference)
+│   │   │   ├── Novita/              # Novita AI (Llama, Mistral, Qwen)
+│   │   │   └── Writer/              # Writer (Palmyra models)
 │   │   ├── AiClient.cs              # High-level API
 │   │   └── Models/                  # Shared models
 │   └── AiSdk.AspNetCore/            # 📦 Optional web integration package
