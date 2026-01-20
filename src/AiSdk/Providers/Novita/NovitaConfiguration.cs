@@ -13,7 +13,7 @@ public record NovitaConfiguration
     /// <summary>
     /// Gets or sets the Novita API base URL.
     /// </summary>
-    public string BaseUrl { get; init; } = "https://api.novita.ai/v3/openai";
+    public string BaseUrl { get; init; } = "https://api.novita.ai/v3/openai/";
 
     /// <summary>
     /// Gets or sets the request timeout in seconds (optional).

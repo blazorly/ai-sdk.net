@@ -16,7 +16,7 @@ public record OpenRouterConfiguration
     /// Gets or sets the OpenRouter base URL.
     /// Defaults to the official OpenRouter API endpoint.
     /// </summary>
-    public string BaseUrl { get; init; } = "https://openrouter.ai/api/v1";
+    public string BaseUrl { get; init; } = "https://openrouter.ai/api/v1/";
 
     /// <summary>
     /// Gets or sets the site URL for HTTP-Referer header (optional).

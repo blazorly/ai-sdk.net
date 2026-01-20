@@ -15,7 +15,7 @@ public record StabilityConfiguration
     /// Default is "https://api.stability.ai/v2beta" for image generation.
     /// For self-hosted StableLM models, use your deployment URL (e.g., "http://localhost:8000/v1").
     /// </summary>
-    public string BaseUrl { get; init; } = "https://api.stability.ai/v2beta";
+    public string BaseUrl { get; init; } = "https://api.stability.ai/v2beta/";
 
     /// <summary>
     /// Gets or sets the request timeout in seconds (optional).

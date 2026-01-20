@@ -13,7 +13,7 @@ public record OpenAIConfiguration
     /// <summary>
     /// Gets or sets the OpenAI API base URL.
     /// </summary>
-    public string BaseUrl { get; init; } = "https://api.openai.com/v1";
+    public string BaseUrl { get; init; } = "https://api.openai.com/v1/";
 
     /// <summary>
     /// Gets or sets the organization ID (optional).

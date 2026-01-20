@@ -13,7 +13,7 @@ public record LumaConfiguration
     /// <summary>
     /// Gets or sets the Luma AI API base URL.
     /// </summary>
-    public string BaseUrl { get; init; } = "https://api.lumalabs.ai/v1";
+    public string BaseUrl { get; init; } = "https://api.lumalabs.ai/v1/";
 
     /// <summary>
     /// Gets or sets the request timeout in seconds (optional).

@@ -13,7 +13,7 @@ public record FalConfiguration
     /// <summary>
     /// Gets or sets the Fal AI API base URL.
     /// </summary>
-    public string BaseUrl { get; init; } = "https://fal.run";
+    public string BaseUrl { get; init; } = "https://fal.run/";
 
     /// <summary>
     /// Gets or sets the request timeout in seconds (optional).

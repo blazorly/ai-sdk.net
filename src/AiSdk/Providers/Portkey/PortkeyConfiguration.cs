@@ -29,7 +29,7 @@ public record PortkeyConfiguration
     /// Gets or sets the Portkey AI Gateway base URL.
     /// Defaults to the official Portkey API endpoint.
     /// </summary>
-    public string BaseUrl { get; init; } = "https://api.portkey.ai/v1";
+    public string BaseUrl { get; init; } = "https://api.portkey.ai/v1/";
 
     /// <summary>
     /// Gets or sets the request timeout in seconds (optional).

@@ -13,7 +13,7 @@ public record TogetherAIConfiguration
     /// <summary>
     /// Gets or sets the Together AI API base URL.
     /// </summary>
-    public string BaseUrl { get; init; } = "https://api.together.xyz/v1";
+    public string BaseUrl { get; init; } = "https://api.together.xyz/v1/";
 
     /// <summary>
     /// Gets or sets the request timeout in seconds (optional).

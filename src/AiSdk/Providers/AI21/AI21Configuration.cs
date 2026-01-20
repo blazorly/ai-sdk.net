@@ -13,7 +13,7 @@ public record AI21Configuration
     /// <summary>
     /// Gets or sets the AI21 Labs API base URL.
     /// </summary>
-    public string BaseUrl { get; init; } = "https://api.ai21.com/studio/v1";
+    public string BaseUrl { get; init; } = "https://api.ai21.com/studio/v1/";
 
     /// <summary>
     /// Gets or sets the request timeout in seconds (optional).

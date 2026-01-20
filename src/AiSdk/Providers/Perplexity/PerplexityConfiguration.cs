@@ -13,7 +13,7 @@ public record PerplexityConfiguration
     /// <summary>
     /// Gets or sets the Perplexity API base URL.
     /// </summary>
-    public string BaseUrl { get; init; } = "https://api.perplexity.ai";
+    public string BaseUrl { get; init; } = "https://api.perplexity.ai/";
 
     /// <summary>
     /// Gets or sets the request timeout in seconds (optional).

@@ -1,5 +1,6 @@
 using AiSdk;
 using AiSdk.Abstractions;
+using AiSdk.Providers.OpenRouter;
 
 namespace GettingStarted;
 
@@ -23,13 +24,13 @@ class Program
         Console.WriteLine("─────────────────────────────────────────────────────────────────");
         Console.WriteLine();
 
-        Console.WriteLine("1. Install Provider Package:");
-        Console.WriteLine("   dotnet add package AiSdk.Providers.OpenAI");
+        Console.WriteLine("1. Install the SDK:");
+        Console.WriteLine("   dotnet add package AiSdk");
         Console.WriteLine();
 
         Console.WriteLine("2. Initialize a Model:");
-        Console.WriteLine("   var openai = new OpenAIProvider(apiKey: \"your-api-key\");");
-        Console.WriteLine("   var model = openai.ChatModel(\"gpt-4\");");
+        Console.WriteLine("   var apiKey = Environment.GetEnvironmentVariable(\"OPENROUTER_API_KEY\");");
+        Console.WriteLine("   var model = OpenRouterProvider.Claude3_5_Sonnet(apiKey);");
         Console.WriteLine();
 
         Console.WriteLine("3. Generate Text:");
@@ -37,7 +38,8 @@ class Program
         Console.WriteLine("       model,");
         Console.WriteLine("       new GenerateTextOptions");
         Console.WriteLine("       {");
-        Console.WriteLine("           Prompt = \"Tell me a joke about programming\"");
+        Console.WriteLine("           Prompt = \"Tell me a joke about programming\",");
+        Console.WriteLine("           MaxTokens = 200");
         Console.WriteLine("       });");
         Console.WriteLine();
         Console.WriteLine("   Console.WriteLine(result.Text);");
@@ -136,20 +138,18 @@ class Program
         Console.WriteLine();
 
         Console.WriteLine("─────────────────────────────────────────────────────────────────");
-        Console.WriteLine("  Example Code Snippet");
+        Console.WriteLine("  Example Code Snippets");
         Console.WriteLine("─────────────────────────────────────────────────────────────────");
         Console.WriteLine();
 
-        Console.WriteLine("// Complete working example:");
+        Console.WriteLine("// Example with AiClient (provider-agnostic):");
         Console.WriteLine();
         Console.WriteLine("using AiSdk;");
-        Console.WriteLine("using AiSdk.Providers.OpenAI;");
+        Console.WriteLine("using AiSdk.Abstractions;");
         Console.WriteLine();
-        Console.WriteLine("var apiKey = Environment.GetEnvironmentVariable(\"OPENAI_API_KEY\");");
-        Console.WriteLine("var openai = new OpenAIProvider(apiKey: apiKey);");
-        Console.WriteLine("var model = openai.ChatModel(\"gpt-4\");");
+        Console.WriteLine("// Get model from any provider (OpenRouter, OpenAI, etc.)");
+        Console.WriteLine("ILanguageModel model = /* your provider model */;");
         Console.WriteLine();
-        Console.WriteLine("// Generate text");
         Console.WriteLine("var result = await AiClient.GenerateTextAsync(");
         Console.WriteLine("    model,");
         Console.WriteLine("    new GenerateTextOptions");
@@ -161,7 +161,57 @@ class Program
         Console.WriteLine("    });");
         Console.WriteLine();
         Console.WriteLine("Console.WriteLine(result.Text);");
-        Console.WriteLine("Console.WriteLine($\"Tokens used: {result.Usage.TotalTokens}\");");
+        Console.WriteLine();
+        Console.WriteLine();
+
+        Console.WriteLine("// OpenRouter Example (100+ models from multiple providers):");
+        Console.WriteLine();
+        Console.WriteLine("using AiSdk;");
+        Console.WriteLine("using AiSdk.Providers.OpenRouter;");
+        Console.WriteLine();
+        Console.WriteLine("var apiKey = Environment.GetEnvironmentVariable(\"OPENROUTER_API_KEY\");");
+        Console.WriteLine();
+        Console.WriteLine("// Create model using convenience methods:");
+        Console.WriteLine("var model = OpenRouterProvider.Claude3_5_Sonnet(apiKey);");
+        Console.WriteLine("var model = OpenRouterProvider.GPT4_Turbo(apiKey);");
+        Console.WriteLine("var model = OpenRouterProvider.GeminiPro(apiKey);");
+        Console.WriteLine("var model = OpenRouterProvider.Llama3_70B(apiKey);");
+        Console.WriteLine();
+        Console.WriteLine("// Or use any model by ID:");
+        Console.WriteLine("var model = OpenRouterProvider.CreateChatModel(\"deepseek/deepseek-v3\", apiKey);");
+        Console.WriteLine();
+        Console.WriteLine("// Generate text:");
+        Console.WriteLine("var result = await AiClient.GenerateTextAsync(");
+        Console.WriteLine("    model,");
+        Console.WriteLine("    new GenerateTextOptions");
+        Console.WriteLine("    {");
+        Console.WriteLine("        Prompt = \"Explain quantum computing in simple terms\",");
+        Console.WriteLine("        MaxTokens = 500,");
+        Console.WriteLine("        Temperature = 0.7");
+        Console.WriteLine("    });");
+        Console.WriteLine();
+        Console.WriteLine("Console.WriteLine(result.Text);");
+        Console.WriteLine();
+        Console.WriteLine("// Stream responses in real-time:");
+        Console.WriteLine("await foreach (var chunk in AiClient.StreamTextAsync(");
+        Console.WriteLine("    model,");
+        Console.WriteLine("    new GenerateTextOptions { Prompt = \"Tell me a story\" }))");
+        Console.WriteLine("{");
+        Console.WriteLine("    if (chunk.Delta != null)");
+        Console.WriteLine("        Console.Write(chunk.Delta);");
+        Console.WriteLine("}");
+        Console.WriteLine();
+        Console.WriteLine("// Advanced configuration with custom headers:");
+        Console.WriteLine("var config = new OpenRouterConfiguration");
+        Console.WriteLine("{");
+        Console.WriteLine("    ApiKey = apiKey,");
+        Console.WriteLine("    SiteUrl = \"https://your-site.com\",");
+        Console.WriteLine("    AppName = \"My AI Application\"");
+        Console.WriteLine("};");
+        Console.WriteLine("var customModel = OpenRouterProvider.CreateChatModel(");
+        Console.WriteLine("    \"anthropic/claude-3.5-sonnet\", config);");
+        Console.WriteLine();
+        Console.WriteLine("// Visit https://openrouter.ai/models for all available models");
         Console.WriteLine();
 
         Console.WriteLine("─────────────────────────────────────────────────────────────────");

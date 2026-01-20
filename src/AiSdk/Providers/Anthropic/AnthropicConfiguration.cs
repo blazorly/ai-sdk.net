@@ -13,7 +13,7 @@ public record AnthropicConfiguration
     /// <summary>
     /// Gets or sets the Anthropic API base URL.
     /// </summary>
-    public string BaseUrl { get; init; } = "https://api.anthropic.com/v1";
+    public string BaseUrl { get; init; } = "https://api.anthropic.com/v1/";
 
     /// <summary>
     /// Gets or sets the Anthropic API version header.

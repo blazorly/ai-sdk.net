@@ -13,7 +13,7 @@ public record DeepSeekConfiguration
     /// <summary>
     /// Gets or sets the DeepSeek API base URL.
     /// </summary>
-    public string BaseUrl { get; init; } = "https://api.deepseek.com";
+    public string BaseUrl { get; init; } = "https://api.deepseek.com/";
 
     /// <summary>
     /// Gets or sets the request timeout in seconds (optional).

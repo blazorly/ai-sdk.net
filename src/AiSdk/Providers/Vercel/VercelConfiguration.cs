@@ -15,7 +15,7 @@ public record VercelConfiguration
     /// Gets or sets the Vercel AI Gateway base URL.
     /// Defaults to the official Vercel AI Gateway endpoint.
     /// </summary>
-    public string BaseUrl { get; init; } = "https://ai-gateway.vercel.sh/v3/ai";
+    public string BaseUrl { get; init; } = "https://ai-gateway.vercel.sh/v3/ai/";
 
     /// <summary>
     /// Gets or sets the request timeout in seconds (optional).

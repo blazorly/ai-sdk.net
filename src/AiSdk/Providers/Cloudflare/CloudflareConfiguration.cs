@@ -18,7 +18,7 @@ public record CloudflareConfiguration
     /// <summary>
     /// Gets or sets the Cloudflare API base URL.
     /// </summary>
-    public string BaseUrl { get; init; } = "https://api.cloudflare.com/client/v4";
+    public string BaseUrl { get; init; } = "https://api.cloudflare.com/client/v4/";
 
     /// <summary>
     /// Gets or sets the request timeout in seconds (optional).

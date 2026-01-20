@@ -14,7 +14,7 @@ public record LlamaFileConfiguration
     /// <summary>
     /// Gets or sets the LlamaFile server base URL.
     /// </summary>
-    public string BaseUrl { get; init; } = "http://localhost:8080/v1";
+    public string BaseUrl { get; init; } = "http://localhost:8080/v1/";
 
     /// <summary>
     /// Gets or sets the request timeout in seconds (optional).

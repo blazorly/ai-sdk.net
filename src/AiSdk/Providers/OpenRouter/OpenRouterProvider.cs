@@ -23,7 +23,7 @@ public static class OpenRouterProvider
         var config = new OpenRouterConfiguration
         {
             ApiKey = apiKey,
-            BaseUrl = baseUrl ?? "https://openrouter.ai/api/v1"
+            BaseUrl = baseUrl ?? "https://openrouter.ai/api/v1/"
         };
 
         return new OpenRouterChatLanguageModel(modelId, config, httpClient);

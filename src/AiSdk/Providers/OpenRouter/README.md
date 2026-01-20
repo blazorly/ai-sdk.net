@@ -71,7 +71,7 @@ var mixtral = OpenRouterProvider.Mixtral8x7B("your-api-key");
 var config = new OpenRouterConfiguration
 {
     ApiKey = "your-api-key",
-    BaseUrl = "https://openrouter.ai/api/v1", // Optional, this is the default
+    BaseUrl = "https://openrouter.ai/api/v1/", // Optional, this is the default
     TimeoutSeconds = 120 // Optional timeout
 };
 

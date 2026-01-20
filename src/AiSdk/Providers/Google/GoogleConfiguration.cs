@@ -13,7 +13,7 @@ public record GoogleConfiguration
     /// <summary>
     /// Gets or sets the Google API base URL.
     /// </summary>
-    public string BaseUrl { get; init; } = "https://generativelanguage.googleapis.com/v1beta";
+    public string BaseUrl { get; init; } = "https://generativelanguage.googleapis.com/v1beta/";
 
     /// <summary>
     /// Gets or sets the request timeout in seconds (optional).
