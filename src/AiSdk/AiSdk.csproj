@@ -8,6 +8,12 @@
     <Company>Deesha Tech</Company>
     <PackageIcon>icon.png</PackageIcon>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/blazorly/ai-sdk.net</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/blazorly/ai-sdk.net</RepositoryUrl>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
+    <SignAssembly>False</SignAssembly>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
