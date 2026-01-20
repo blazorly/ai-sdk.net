@@ -500,8 +500,6 @@ dotnet run
 
 ## Roadmap
 
-See [DOTNET_PORTING_PLAN.md](../DOTNET_PORTING_PLAN.md) for the complete implementation plan.
-
 **Phase 5 (Complete):**
 - ✅ Groq provider (Llama 3.1, Mixtral, Gemma)
 - ✅ Mistral provider (Mistral Large, Medium, Mixtral)
@@ -535,6 +533,7 @@ See [DOTNET_PORTING_PLAN.md](../DOTNET_PORTING_PLAN.md) for the complete impleme
 
 ## License
 
-Apache-2.0
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+
 
 
