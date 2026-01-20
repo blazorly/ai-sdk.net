@@ -2,7 +2,7 @@
 
 > **Status:** Phases 1-4 Complete ✅ | Actively Developed | .NET 10.0+
 
-A comprehensive .NET SDK for integrating with AI providers, offering a unified interface for language models, embeddings, structured output, and streaming. Ported from the [Vercel AI SDK](https://sdk.vercel.ai).
+A comprehensive .NET SDK for integrating with AI providers, offering a unified interface for language models, embeddings, structured output, and streaming.
 
 ## Current Status
 
