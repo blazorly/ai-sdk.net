@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>AI SDK for .NET - Unified interface for 30+ AI providers with all providers included</Description>
-    <PackageTags>$(PackageTags);ai-sdk;generative-ai;openai;anthropic;azure;google;groq;mistral;cohere;bedrock</PackageTags>
+    <PackageTags>$(PackageTags);ai-sdk;generative-ai;openai;anthropic;azure;google;groq;mistral;cohere;bedrock;zai</PackageTags>
     <Title>AI SDK for .NET</Title>
     <Authors>Deepak Battini</Authors>
     <Company>Deesha Tech</Company>

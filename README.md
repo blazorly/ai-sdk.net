@@ -2,7 +2,7 @@
 
 > **Status:** Phases 1-8 Complete ✅ | Production Ready | .NET 10.0+
 
-A comprehensive .NET SDK for integrating with AI providers, offering a unified interface for language models, embeddings, structured output, and streaming. **Single package, 32 providers included.**
+A comprehensive .NET SDK for integrating with AI providers, offering a unified interface for language models, embeddings, structured output, and streaming. **Single package, 33 providers included.**
 
 ## Current Status
 
@@ -23,7 +23,7 @@ A comprehensive .NET SDK for integrating with AI providers, offering a unified i
 
 - **📦 Single Package** - Everything in one NuGet package, no dependency hell
 - **🚀 Idiomatic .NET** - Async/await, IAsyncEnumerable, records, dependency injection
-- **🔌 32 Providers Included** - OpenAI, Anthropic, Azure, Google, Groq, Mistral, Cohere, GoogleVertex, AmazonBedrock, Replicate, Perplexity, DeepSeek, OpenAI-Compatible, Vercel, xAI, HuggingFace, Cerebras, Fireworks, TogetherAI, AI21, Cloudflare, Baseten, Lepton, Novita, Writer, LlamaFile, Friendli, Portkey, Fal, Luma, Stability, OpenRouter
+- **🔌 33 Providers Included** - OpenAI, Anthropic, Azure, Google, Groq, Mistral, Cohere, GoogleVertex, AmazonBedrock, Replicate, Perplexity, DeepSeek, OpenAI-Compatible, Vercel, xAI, HuggingFace, Cerebras, Fireworks, TogetherAI, AI21, Cloudflare, Baseten, Lepton, Novita, Writer, LlamaFile, Friendli, Portkey, Fal, Luma, Stability, OpenRouter, Z.AI
 - **🌐 ASP.NET Core Ready** - DI integration, health checks, SSE streaming middleware
 - **🎯 Structured Output** - Generate typed objects with JSON schema validation
 - **⚡ Real-time Streaming** - Server-sent events for chat and completions
@@ -42,7 +42,7 @@ dotnet add package AiSdk
 dotnet add package AiSdk.AspNetCore
 ```
 
-That's it! All 32 providers are included in the single `AiSdk` package.
+That's it! All 33 providers are included in the single `AiSdk` package.
 
 ## Quick Start
 
@@ -135,7 +135,7 @@ record ChatRequest(string Message);
 
 All providers are included in the single `AiSdk` package - no need to install separate provider packages!
 
-### Language Model Providers (32 Complete / 19+ Planned)
+### Language Model Providers (33 Complete / 19+ Planned)
 
 #### Priority 1 - Major Cloud Providers (All Complete ✅)
 
@@ -166,6 +166,7 @@ All providers are included in the single `AiSdk` package - no need to install se
 | **Cohere** | Command R+, Command R, Command | ✅ Complete |
 | **Perplexity** | Sonar models (online search), Llama 3.1 (8B/70B) | ✅ Complete |
 | **DeepSeek** | DeepSeek Chat, DeepSeek Coder, DeepSeek Reasoner (R1) | ✅ Complete |
+| **Z.AI** | GLM-4.7, GLM-4.6, CodeGeeX-4, GLM-4-32B-128K | ✅ Complete |
 | **xAI (Grok)** | Grok-4, Grok-3, Grok-2-vision, Grok-2-image | ✅ Complete |
 | **HuggingFace** | 10,000+ models (Llama2, Mistral7B, Mixtral8x7B, etc.) | ✅ Complete |
 | **Replicate** | Llama 2 (70B/13B), Mixtral 8x7B, Mistral 7B | ✅ Complete |
@@ -215,7 +216,7 @@ ai-sdk.net/
 ├── src/
 │   ├── AiSdk/                       # 📦 Main package (includes everything)
 │   │   ├── Abstractions/            # Core interfaces, models, errors
-│   │   ├── Core/                    # Utilities (streaming, JSON, HTTP)
+│   │   ├── Core/                    # Utili3ies (streaming, JSON, HTTP)
 │   │   ├── Providers/               # All 32 providers in one place
 │   │   │   ├── OpenAI/              # OpenAI (GPT-4, GPT-3.5)
 │   │   │   ├── Anthropic/           # Anthropic (Claude)
@@ -229,6 +230,7 @@ ai-sdk.net/
 │   │   │   ├── Replicate/           # Replicate (Llama 2, Mixtral)
 │   │   │   ├── Perplexity/          # Perplexity (Sonar online search)
 │   │   │   ├── DeepSeek/            # DeepSeek (Chat, Coder, Reasoner)
+│   │   │   ├── ZAI/                 # Z.AI (GLM-4, CodeGeeX)
 │   │   │   ├── OpenAICompatible/    # Universal OpenAI-compatible
 │   │   │   ├── Vercel/              # Vercel AI Gateway
 │   │   │   ├── XAI/                 # xAI (Grok)
