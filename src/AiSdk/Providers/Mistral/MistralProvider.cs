@@ -96,4 +96,55 @@ public static class MistralProvider
     {
         return CreateChatModel(modelId, apiKey, null, httpClient);
     }
+
+    /// <summary>
+    /// Creates a Mistral embedding model with the specified model ID.
+    /// </summary>
+    /// <param name="modelId">The Mistral embedding model ID (e.g., "mistral-embed").</param>
+    /// <param name="apiKey">The Mistral AI API key.</param>
+    /// <param name="baseUrl">Optional base URL.</param>
+    /// <param name="httpClient">Optional HTTP client.</param>
+    /// <returns>A Mistral embedding model.</returns>
+    public static MistralEmbeddingModel CreateEmbeddingModel(
+        string modelId,
+        string apiKey,
+        string? baseUrl = null,
+        HttpClient? httpClient = null)
+    {
+        var config = new MistralConfiguration
+        {
+            ApiKey = apiKey,
+            BaseUrl = baseUrl ?? "https://api.mistral.ai/v1"
+        };
+
+        return new MistralEmbeddingModel(modelId, config, httpClient);
+    }
+
+    /// <summary>
+    /// Creates a Mistral embedding model with the specified configuration.
+    /// </summary>
+    /// <param name="modelId">The Mistral embedding model ID.</param>
+    /// <param name="config">The Mistral configuration.</param>
+    /// <param name="httpClient">Optional HTTP client.</param>
+    /// <returns>A Mistral embedding model.</returns>
+    public static MistralEmbeddingModel CreateEmbeddingModel(
+        string modelId,
+        MistralConfiguration config,
+        HttpClient? httpClient = null)
+    {
+        return new MistralEmbeddingModel(modelId, config, httpClient);
+    }
+
+    /// <summary>
+    /// Creates a mistral-embed model.
+    /// </summary>
+    /// <param name="apiKey">The Mistral AI API key.</param>
+    /// <param name="httpClient">Optional HTTP client.</param>
+    /// <returns>A Mistral embed model.</returns>
+    public static MistralEmbeddingModel MistralEmbed(
+        string apiKey,
+        HttpClient? httpClient = null)
+    {
+        return CreateEmbeddingModel("mistral-embed", apiKey, null, httpClient);
+    }
 }

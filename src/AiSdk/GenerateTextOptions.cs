@@ -1,4 +1,5 @@
 using AiSdk.Abstractions;
+using AiSdk.Models;
 
 namespace AiSdk;
 
@@ -51,4 +52,23 @@ public record GenerateTextOptions
     /// Tool choice strategy ("auto", "none", "required", or specific tool name).
     /// </summary>
     public string? ToolChoice { get; init; }
+
+    /// <summary>
+    /// Maximum number of steps in the agent loop.
+    /// When set to a value greater than 1, the SDK will automatically execute tool calls
+    /// and feed results back to the model until it stops calling tools or the limit is reached.
+    /// Default is 1 (single step, no automatic tool execution).
+    /// </summary>
+    public int? MaxSteps { get; init; }
+
+    /// <summary>
+    /// Tool executors keyed by tool name. Required when MaxSteps > 1.
+    /// These are used to automatically execute tool calls within the agent loop.
+    /// </summary>
+    public IReadOnlyDictionary<string, IToolExecutor>? ToolExecutors { get; init; }
+
+    /// <summary>
+    /// Optional callback invoked after each step completes.
+    /// </summary>
+    public Action<StepResult>? OnStepFinish { get; init; }
 }
