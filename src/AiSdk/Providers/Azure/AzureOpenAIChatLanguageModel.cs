@@ -193,7 +193,7 @@ public class AzureOpenAIChatLanguageModel : ILanguageModel
         var messages = options.Messages.Select(m => new AzureOpenAIMessage
         {
             Role = MapRole(m.Role),
-            Content = m.Content,
+            Content = BuildMessageContent(m),
             // Tool role messages use Name as ToolCallId
             ToolCallId = m.Role == MessageRole.Tool ? m.Name : null
         }).ToList();
@@ -228,6 +228,62 @@ public class AzureOpenAIChatLanguageModel : ILanguageModel
         return request;
     }
 
+    /// <summary>
+    /// Builds the content for an Azure OpenAI message, supporting multi-modal content parts.
+    /// Azure OpenAI uses the same format as OpenAI for vision support.
+    /// </summary>
+    private static object? BuildMessageContent(Message message)
+    {
+        if (message.Parts == null || message.Parts.Count == 0)
+        {
+            return message.Content;
+        }
+
+        var parts = new List<AzureOpenAIContentPart>();
+
+        foreach (var part in message.Parts)
+        {
+            switch (part)
+            {
+                case TextPart textPart:
+                    parts.Add(new AzureOpenAIContentPart
+                    {
+                        Type = "text",
+                        Text = textPart.Text
+                    });
+                    break;
+
+                case ImagePart imagePart:
+                    var imageUrl = imagePart.Url;
+                    if (imageUrl == null && imagePart.Data != null)
+                    {
+                        var mimeType = imagePart.MimeType ?? "image/png";
+                        imageUrl = $"data:{mimeType};base64,{Convert.ToBase64String(imagePart.Data)}";
+                    }
+
+                    if (imageUrl != null)
+                    {
+                        parts.Add(new AzureOpenAIContentPart
+                        {
+                            Type = "image_url",
+                            ImageUrl = new AzureOpenAIImageUrl { Url = imageUrl }
+                        });
+                    }
+                    break;
+
+                case FilePart filePart:
+                    parts.Add(new AzureOpenAIContentPart
+                    {
+                        Type = "image_url",
+                        ImageUrl = new AzureOpenAIImageUrl { Url = filePart.Url }
+                    });
+                    break;
+            }
+        }
+
+        return parts;
+    }
+
     private static LanguageModelGenerateResult MapToGenerateResult(AzureOpenAIResponse response)
     {
         var choice = response.Choices[0];
@@ -235,7 +291,7 @@ public class AzureOpenAIChatLanguageModel : ILanguageModel
 
         return new LanguageModelGenerateResult
         {
-            Text = message?.Content,
+            Text = message?.Content?.ToString(),
             FinishReason = MapFinishReason(choice.FinishReason),
             Usage = response.Usage != null ? MapUsage(response.Usage) : new Usage(),
             ToolCalls = message?.ToolCalls?.Select(tc => new ToolCall(

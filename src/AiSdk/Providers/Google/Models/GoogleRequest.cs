@@ -36,13 +36,21 @@ internal record GoogleContent
 }
 
 /// <summary>
-/// Google part (content element).
+/// Google part (content element: text, inline data, file data, or function call/response).
 /// </summary>
 internal record GooglePart
 {
     [JsonPropertyName("text")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Text { get; init; }
+
+    [JsonPropertyName("inlineData")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public GoogleInlineData? InlineData { get; init; }
+
+    [JsonPropertyName("fileData")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public GoogleFileData? FileData { get; init; }
 
     [JsonPropertyName("functionCall")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -51,6 +59,30 @@ internal record GooglePart
     [JsonPropertyName("functionResponse")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public GoogleFunctionResponse? FunctionResponse { get; init; }
+}
+
+/// <summary>
+/// Inline data for images/audio/video in Google Gemini.
+/// </summary>
+internal record GoogleInlineData
+{
+    [JsonPropertyName("mimeType")]
+    public required string MimeType { get; init; }
+
+    [JsonPropertyName("data")]
+    public required string Data { get; init; }
+}
+
+/// <summary>
+/// File data reference for Google Gemini (Cloud Storage or URL).
+/// </summary>
+internal record GoogleFileData
+{
+    [JsonPropertyName("mimeType")]
+    public required string MimeType { get; init; }
+
+    [JsonPropertyName("fileUri")]
+    public required string FileUri { get; init; }
 }
 
 /// <summary>

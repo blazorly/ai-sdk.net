@@ -43,15 +43,20 @@ internal record OpenAIRequest
 
 /// <summary>
 /// OpenAI message in a request.
+/// Content can be a string or an array of content parts for multi-modal messages.
 /// </summary>
 internal record OpenAIMessage
 {
     [JsonPropertyName("role")]
     public required string Role { get; init; }
 
+    /// <summary>
+    /// Text content (used for simple text-only messages).
+    /// Mutually exclusive with ContentParts.
+    /// </summary>
     [JsonPropertyName("content")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string? Content { get; init; }
+    public object? Content { get; init; }
 
     [JsonPropertyName("tool_calls")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -60,6 +65,52 @@ internal record OpenAIMessage
     [JsonPropertyName("tool_call_id")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? ToolCallId { get; init; }
+}
+
+/// <summary>
+/// A content part in a multi-modal OpenAI message.
+/// </summary>
+internal record OpenAIContentPart
+{
+    [JsonPropertyName("type")]
+    public required string Type { get; init; }
+
+    [JsonPropertyName("text")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Text { get; init; }
+
+    [JsonPropertyName("image_url")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public OpenAIImageUrl? ImageUrl { get; init; }
+
+    [JsonPropertyName("input_audio")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public OpenAIInputAudio? InputAudio { get; init; }
+}
+
+/// <summary>
+/// Image URL reference for vision models.
+/// </summary>
+internal record OpenAIImageUrl
+{
+    [JsonPropertyName("url")]
+    public required string Url { get; init; }
+
+    [JsonPropertyName("detail")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Detail { get; init; }
+}
+
+/// <summary>
+/// Audio input for audio-capable models.
+/// </summary>
+internal record OpenAIInputAudio
+{
+    [JsonPropertyName("data")]
+    public required string Data { get; init; }
+
+    [JsonPropertyName("format")]
+    public required string Format { get; init; }
 }
 
 /// <summary>

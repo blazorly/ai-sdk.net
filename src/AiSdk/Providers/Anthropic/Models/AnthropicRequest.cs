@@ -57,7 +57,7 @@ internal record AnthropicMessage
 }
 
 /// <summary>
-/// Anthropic content block (text or tool use).
+/// Anthropic content block (text, image, document, or tool use).
 /// </summary>
 internal record AnthropicContentBlock
 {
@@ -67,6 +67,10 @@ internal record AnthropicContentBlock
     [JsonPropertyName("text")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Text { get; init; }
+
+    [JsonPropertyName("source")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public AnthropicSource? Source { get; init; }
 
     [JsonPropertyName("id")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -87,6 +91,27 @@ internal record AnthropicContentBlock
     [JsonPropertyName("content")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Content { get; init; }
+}
+
+/// <summary>
+/// Source for image/document content blocks in Anthropic.
+/// </summary>
+internal record AnthropicSource
+{
+    [JsonPropertyName("type")]
+    public required string Type { get; init; }
+
+    [JsonPropertyName("media_type")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? MediaType { get; init; }
+
+    [JsonPropertyName("data")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Data { get; init; }
+
+    [JsonPropertyName("url")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Url { get; init; }
 }
 
 /// <summary>

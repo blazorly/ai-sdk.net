@@ -128,4 +128,77 @@ public static class AzureOpenAIProvider
     {
         return CreateChatModel(deploymentName, endpoint, apiKey, "gpt-3.5-turbo", apiVersion);
     }
+
+    /// <summary>
+    /// Creates an Azure OpenAI embedding model.
+    /// </summary>
+    /// <param name="deploymentName">The Azure OpenAI embedding deployment name.</param>
+    /// <param name="endpoint">The Azure OpenAI endpoint URL.</param>
+    /// <param name="apiKey">The API key for authentication.</param>
+    /// <param name="modelId">Optional model ID for display purposes (defaults to deployment name).</param>
+    /// <param name="apiVersion">Optional API version.</param>
+    /// <param name="httpClient">Optional HTTP client.</param>
+    /// <returns>An Azure OpenAI embedding model.</returns>
+    public static AzureOpenAIEmbeddingModel CreateEmbeddingModel(
+        string deploymentName,
+        string endpoint,
+        string apiKey,
+        string? modelId = null,
+        string? apiVersion = null,
+        HttpClient? httpClient = null)
+    {
+        var config = new AzureOpenAIConfiguration
+        {
+            Endpoint = endpoint,
+            DeploymentName = deploymentName,
+            ApiKey = apiKey,
+            ApiVersion = apiVersion ?? "2024-02-15-preview"
+        };
+
+        return new AzureOpenAIEmbeddingModel(modelId ?? deploymentName, config, httpClient);
+    }
+
+    /// <summary>
+    /// Creates an Azure OpenAI embedding model with Azure AD authentication.
+    /// </summary>
+    /// <param name="deploymentName">The Azure OpenAI embedding deployment name.</param>
+    /// <param name="endpoint">The Azure OpenAI endpoint URL.</param>
+    /// <param name="azureAdToken">The Azure AD token for authentication.</param>
+    /// <param name="modelId">Optional model ID for display purposes.</param>
+    /// <param name="apiVersion">Optional API version.</param>
+    /// <param name="httpClient">Optional HTTP client.</param>
+    /// <returns>An Azure OpenAI embedding model.</returns>
+    public static AzureOpenAIEmbeddingModel CreateEmbeddingModelWithAzureAd(
+        string deploymentName,
+        string endpoint,
+        string azureAdToken,
+        string? modelId = null,
+        string? apiVersion = null,
+        HttpClient? httpClient = null)
+    {
+        var config = new AzureOpenAIConfiguration
+        {
+            Endpoint = endpoint,
+            DeploymentName = deploymentName,
+            AzureAdToken = azureAdToken,
+            ApiVersion = apiVersion ?? "2024-02-15-preview"
+        };
+
+        return new AzureOpenAIEmbeddingModel(modelId ?? deploymentName, config, httpClient);
+    }
+
+    /// <summary>
+    /// Creates an Azure OpenAI embedding model with the specified configuration.
+    /// </summary>
+    /// <param name="config">The Azure OpenAI configuration.</param>
+    /// <param name="modelId">Optional model ID for display purposes.</param>
+    /// <param name="httpClient">Optional HTTP client.</param>
+    /// <returns>An Azure OpenAI embedding model.</returns>
+    public static AzureOpenAIEmbeddingModel CreateEmbeddingModel(
+        AzureOpenAIConfiguration config,
+        string? modelId = null,
+        HttpClient? httpClient = null)
+    {
+        return new AzureOpenAIEmbeddingModel(modelId ?? config.DeploymentName, config, httpClient);
+    }
 }

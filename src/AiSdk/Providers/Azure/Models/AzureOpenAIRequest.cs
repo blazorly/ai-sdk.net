@@ -40,6 +40,7 @@ internal record AzureOpenAIRequest
 
 /// <summary>
 /// Azure OpenAI message in a request.
+/// Content can be a string or an array of content parts for multi-modal messages.
 /// </summary>
 internal record AzureOpenAIMessage
 {
@@ -48,7 +49,7 @@ internal record AzureOpenAIMessage
 
     [JsonPropertyName("content")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string? Content { get; init; }
+    public object? Content { get; init; }
 
     [JsonPropertyName("tool_calls")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -57,6 +58,32 @@ internal record AzureOpenAIMessage
     [JsonPropertyName("tool_call_id")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? ToolCallId { get; init; }
+}
+
+/// <summary>
+/// A content part in a multi-modal Azure OpenAI message.
+/// </summary>
+internal record AzureOpenAIContentPart
+{
+    [JsonPropertyName("type")]
+    public required string Type { get; init; }
+
+    [JsonPropertyName("text")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Text { get; init; }
+
+    [JsonPropertyName("image_url")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public AzureOpenAIImageUrl? ImageUrl { get; init; }
+}
+
+/// <summary>
+/// Image URL for Azure OpenAI vision models.
+/// </summary>
+internal record AzureOpenAIImageUrl
+{
+    [JsonPropertyName("url")]
+    public required string Url { get; init; }
 }
 
 /// <summary>

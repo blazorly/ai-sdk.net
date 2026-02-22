@@ -67,12 +67,17 @@ public static class Tool
 /// </summary>
 /// <typeparam name="TInput">The input parameter type for the tool.</typeparam>
 /// <typeparam name="TOutput">The output/return type for the tool.</typeparam>
-public class ToolWithExecution<TInput, TOutput>
+public class ToolWithExecution<TInput, TOutput> : IToolExecutor
 {
     /// <summary>
     /// Gets the tool definition.
     /// </summary>
     public ToolDefinition Definition { get; }
+
+    /// <summary>
+    /// Gets the tool name.
+    /// </summary>
+    public string ToolName => Definition.Name;
 
     /// <summary>
     /// Gets the execution function.
@@ -93,7 +98,7 @@ public class ToolWithExecution<TInput, TOutput>
     }
 
     /// <summary>
-    /// Executes the tool with the provided arguments.
+    /// Executes the tool with the provided arguments and returns the typed result.
     /// </summary>
     /// <param name="argumentsJson">The JSON arguments to parse.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
@@ -127,5 +132,16 @@ public class ToolWithExecution<TInput, TOutput>
 
         using var doc = JsonDocument.Parse(argumentsJson);
         return await ExecuteAsync(doc, cancellationToken);
+    }
+
+    /// <summary>
+    /// IToolExecutor implementation: executes the tool and returns the result as a serialized string.
+    /// </summary>
+    async Task<string> IToolExecutor.ExecuteAsync(
+        JsonDocument arguments,
+        CancellationToken cancellationToken)
+    {
+        var result = await ExecuteAsync(arguments, cancellationToken);
+        return JsonSerializer.Serialize(result);
     }
 }

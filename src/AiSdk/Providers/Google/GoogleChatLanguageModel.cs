@@ -226,6 +226,94 @@ public class GoogleChatLanguageModel : ILanguageModel
                     }
                 });
             }
+            else if (message.Parts != null && message.Parts.Count > 0)
+            {
+                // Multi-modal content parts
+                foreach (var part in message.Parts)
+                {
+                    switch (part)
+                    {
+                        case TextPart textPart:
+                            parts.Add(new GooglePart { Text = textPart.Text });
+                            break;
+
+                        case ImagePart imagePart:
+                            if (imagePart.Data != null)
+                            {
+                                parts.Add(new GooglePart
+                                {
+                                    InlineData = new GoogleInlineData
+                                    {
+                                        MimeType = imagePart.MimeType ?? "image/png",
+                                        Data = Convert.ToBase64String(imagePart.Data)
+                                    }
+                                });
+                            }
+                            else if (imagePart.Url != null)
+                            {
+                                parts.Add(new GooglePart
+                                {
+                                    FileData = new GoogleFileData
+                                    {
+                                        MimeType = imagePart.MimeType ?? "image/png",
+                                        FileUri = imagePart.Url
+                                    }
+                                });
+                            }
+                            break;
+
+                        case AudioPart audioPart:
+                            if (audioPart.Data != null)
+                            {
+                                parts.Add(new GooglePart
+                                {
+                                    InlineData = new GoogleInlineData
+                                    {
+                                        MimeType = audioPart.MimeType ?? "audio/wav",
+                                        Data = Convert.ToBase64String(audioPart.Data)
+                                    }
+                                });
+                            }
+                            else if (audioPart.Url != null)
+                            {
+                                parts.Add(new GooglePart
+                                {
+                                    FileData = new GoogleFileData
+                                    {
+                                        MimeType = audioPart.MimeType ?? "audio/wav",
+                                        FileUri = audioPart.Url
+                                    }
+                                });
+                            }
+                            break;
+
+                        case FilePart filePart:
+                            if (filePart.Data != null)
+                            {
+                                parts.Add(new GooglePart
+                                {
+                                    InlineData = new GoogleInlineData
+                                    {
+                                        MimeType = filePart.MimeType,
+                                        Data = Convert.ToBase64String(filePart.Data)
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                parts.Add(new GooglePart
+                                {
+                                    FileData = new GoogleFileData
+                                    {
+                                        MimeType = filePart.MimeType,
+                                        FileUri = filePart.Url
+                                    }
+                                });
+                            }
+                            break;
+                    }
+                }
+            }
             else
             {
                 // Regular text content

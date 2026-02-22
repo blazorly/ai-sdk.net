@@ -81,4 +81,55 @@ public static class GoogleProvider
     {
         return CreateChatModel("gemini-1.0-pro", apiKey, httpClient: httpClient);
     }
+
+    /// <summary>
+    /// Creates a Google embedding model with the specified model ID.
+    /// </summary>
+    /// <param name="modelId">The Google embedding model ID (e.g., "text-embedding-004").</param>
+    /// <param name="apiKey">The Google API key.</param>
+    /// <param name="baseUrl">Optional base URL.</param>
+    /// <param name="httpClient">Optional HTTP client.</param>
+    /// <returns>A Google embedding model.</returns>
+    public static GoogleEmbeddingModel CreateEmbeddingModel(
+        string modelId,
+        string apiKey,
+        string? baseUrl = null,
+        HttpClient? httpClient = null)
+    {
+        var config = new GoogleConfiguration
+        {
+            ApiKey = apiKey,
+            BaseUrl = baseUrl ?? "https://generativelanguage.googleapis.com/v1beta/"
+        };
+
+        return new GoogleEmbeddingModel(modelId, config, httpClient);
+    }
+
+    /// <summary>
+    /// Creates a Google embedding model with the specified configuration.
+    /// </summary>
+    /// <param name="modelId">The Google embedding model ID.</param>
+    /// <param name="config">The Google configuration.</param>
+    /// <param name="httpClient">Optional HTTP client.</param>
+    /// <returns>A Google embedding model.</returns>
+    public static GoogleEmbeddingModel CreateEmbeddingModel(
+        string modelId,
+        GoogleConfiguration config,
+        HttpClient? httpClient = null)
+    {
+        return new GoogleEmbeddingModel(modelId, config, httpClient);
+    }
+
+    /// <summary>
+    /// Creates a text-embedding-004 model.
+    /// </summary>
+    /// <param name="apiKey">The Google API key.</param>
+    /// <param name="httpClient">Optional HTTP client.</param>
+    /// <returns>A Google text-embedding-004 model.</returns>
+    public static GoogleEmbeddingModel TextEmbedding004(
+        string apiKey,
+        HttpClient? httpClient = null)
+    {
+        return CreateEmbeddingModel("text-embedding-004", apiKey, httpClient: httpClient);
+    }
 }

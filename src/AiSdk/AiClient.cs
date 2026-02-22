@@ -13,6 +13,7 @@ public static class AiClient
 {
     /// <summary>
     /// Generates text using a language model (non-streaming).
+    /// When MaxSteps is not set (default), performs a single generation call.
     /// </summary>
     /// <param name="model">The language model to use.</param>
     /// <param name="options">The generation options.</param>
@@ -25,6 +26,22 @@ public static class AiClient
     {
         ArgumentNullException.ThrowIfNull(model);
         ArgumentNullException.ThrowIfNull(options);
+
+        // If MaxSteps is set, delegate to the multi-step version
+        if (options.MaxSteps.HasValue && options.MaxSteps.Value > 1)
+        {
+            var multiStepResult = await GenerateTextWithStepsAsync(model, options, cancellationToken);
+            // Return the last step's result for backward compatibility
+            return new LanguageModelGenerateResult
+            {
+                Text = multiStepResult.Text,
+                FinishReason = multiStepResult.FinishReason,
+                Usage = multiStepResult.Usage,
+                ToolCalls = multiStepResult.ToolCalls,
+                ProviderMetadata = multiStepResult.ProviderMetadata,
+                Warnings = multiStepResult.Warnings
+            };
+        }
 
         var messages = BuildMessages(options);
 
@@ -40,6 +57,125 @@ public static class AiClient
         };
 
         return await model.GenerateAsync(callOptions, cancellationToken);
+    }
+
+    /// <summary>
+    /// Generates text with multi-step agent capabilities.
+    /// Automatically executes tool calls and feeds results back to the model
+    /// until the model stops calling tools or MaxSteps is reached.
+    /// </summary>
+    /// <param name="model">The language model to use.</param>
+    /// <param name="options">The generation options (MaxSteps and ToolExecutors should be set).</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A result containing all steps and the final output.</returns>
+    public static async Task<GenerateTextResult> GenerateTextWithStepsAsync(
+        ILanguageModel model,
+        GenerateTextOptions options,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(model);
+        ArgumentNullException.ThrowIfNull(options);
+
+        var maxSteps = options.MaxSteps ?? 1;
+        var messages = new List<Message>(BuildMessages(options));
+        var steps = new List<StepResult>();
+        int? totalInputTokens = 0;
+        int? totalOutputTokens = 0;
+        int? totalTokens = 0;
+
+        for (var step = 0; step < maxSteps; step++)
+        {
+            var callOptions = new LanguageModelCallOptions
+            {
+                Messages = messages.AsReadOnly(),
+                MaxTokens = options.MaxTokens,
+                Temperature = options.Temperature,
+                TopP = options.TopP,
+                StopSequences = options.StopSequences,
+                Tools = options.Tools,
+                ToolChoice = options.ToolChoice
+            };
+
+            var result = await model.GenerateAsync(callOptions, cancellationToken);
+
+            totalInputTokens = (totalInputTokens ?? 0) + (result.Usage.InputTokens ?? 0);
+            totalOutputTokens = (totalOutputTokens ?? 0) + (result.Usage.OutputTokens ?? 0);
+            totalTokens = (totalTokens ?? 0) + (result.Usage.TotalTokens ?? 0);
+
+            var stepResult = new StepResult
+            {
+                StepNumber = step,
+                Text = result.Text,
+                FinishReason = result.FinishReason,
+                Usage = result.Usage,
+                ToolCalls = result.ToolCalls
+            };
+
+            // If the model didn't call any tools, we're done
+            if (result.FinishReason != FinishReason.ToolCalls ||
+                result.ToolCalls == null ||
+                result.ToolCalls.Count == 0 ||
+                options.ToolExecutors == null)
+            {
+                steps.Add(stepResult);
+                options.OnStepFinish?.Invoke(stepResult);
+                break;
+            }
+
+            // Execute each tool call
+            var toolResults = new List<ToolResult>();
+
+            // Add assistant message with tool calls
+            messages.Add(new Message(MessageRole.Assistant, result.Text ?? string.Empty)
+            {
+                Metadata = new Dictionary<string, object>
+                {
+                    ["toolCalls"] = result.ToolCalls
+                }
+            });
+
+            foreach (var toolCall in result.ToolCalls)
+            {
+                if (options.ToolExecutors.TryGetValue(toolCall.ToolName, out var executor))
+                {
+                    var toolResultString = await executor.ExecuteAsync(toolCall.Arguments, cancellationToken);
+
+                    toolResults.Add(new ToolResult
+                    {
+                        ToolCallId = toolCall.ToolCallId,
+                        ToolName = toolCall.ToolName,
+                        Result = toolResultString
+                    });
+
+                    // Add tool result message
+                    messages.Add(new Message(MessageRole.Tool, toolResultString, toolCall.ToolCallId));
+                }
+                else
+                {
+                    throw new NoSuchToolError($"Tool '{toolCall.ToolName}' not found in ToolExecutors")
+                    {
+                        ToolName = toolCall.ToolName
+                    };
+                }
+            }
+
+            stepResult = stepResult with { ToolResults = toolResults };
+            steps.Add(stepResult);
+            options.OnStepFinish?.Invoke(stepResult);
+        }
+
+        var lastStep = steps[^1];
+
+        return new GenerateTextResult
+        {
+            Text = lastStep.Text,
+            FinishReason = lastStep.FinishReason,
+            Usage = new Usage(totalInputTokens, totalOutputTokens, totalTokens),
+            ToolCalls = lastStep.ToolCalls,
+            Steps = steps.AsReadOnly(),
+            Messages = messages.AsReadOnly(),
+            Warnings = null
+        };
     }
 
     /// <summary>
@@ -393,6 +529,46 @@ public static class AiClient
         }
 
         return messages;
+    }
+
+    /// <summary>
+    /// Generates an embedding for a single text input.
+    /// </summary>
+    /// <param name="model">The embedding model to use.</param>
+    /// <param name="input">The text to embed.</param>
+    /// <param name="options">Optional embedding options.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The embedding result containing the vector and usage statistics.</returns>
+    public static Task<EmbeddingResult> EmbedAsync(
+        IEmbeddingModel model,
+        string input,
+        EmbeddingOptions? options = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(model);
+        ArgumentNullException.ThrowIfNull(input);
+
+        return model.EmbedAsync(input, options, cancellationToken);
+    }
+
+    /// <summary>
+    /// Generates embeddings for multiple text inputs in a batch.
+    /// </summary>
+    /// <param name="model">The embedding model to use.</param>
+    /// <param name="inputs">The texts to embed.</param>
+    /// <param name="options">Optional embedding options.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The batch embedding result containing all vectors and usage statistics.</returns>
+    public static Task<BatchEmbeddingResult> EmbedManyAsync(
+        IEmbeddingModel model,
+        IEnumerable<string> inputs,
+        EmbeddingOptions? options = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(model);
+        ArgumentNullException.ThrowIfNull(inputs);
+
+        return model.EmbedManyAsync(inputs, options, cancellationToken);
     }
 
     private static string ExtractJsonFromMarkdown(string text)

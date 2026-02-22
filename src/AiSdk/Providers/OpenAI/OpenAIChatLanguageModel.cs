@@ -179,7 +179,7 @@ public class OpenAIChatLanguageModel : ILanguageModel
         var messages = options.Messages.Select(m => new OpenAIMessage
         {
             Role = MapRole(m.Role),
-            Content = m.Content,
+            Content = BuildMessageContent(m),
             // Tool role messages use Name as ToolCallId
             ToolCallId = m.Role == MessageRole.Tool ? m.Name : null
         }).ToList();
@@ -215,6 +215,86 @@ public class OpenAIChatLanguageModel : ILanguageModel
         return request;
     }
 
+    /// <summary>
+    /// Builds the content for an OpenAI message, supporting both simple text and multi-modal content parts.
+    /// </summary>
+    private static object? BuildMessageContent(Message message)
+    {
+        // If no multi-modal parts, use plain text content
+        if (message.Parts == null || message.Parts.Count == 0)
+        {
+            return message.Content;
+        }
+
+        // Build an array of content parts for multi-modal messages
+        var parts = new List<OpenAIContentPart>();
+
+        foreach (var part in message.Parts)
+        {
+            switch (part)
+            {
+                case TextPart textPart:
+                    parts.Add(new OpenAIContentPart
+                    {
+                        Type = "text",
+                        Text = textPart.Text
+                    });
+                    break;
+
+                case ImagePart imagePart:
+                    var imageUrl = imagePart.Url;
+                    if (imageUrl == null && imagePart.Data != null)
+                    {
+                        var mimeType = imagePart.MimeType ?? "image/png";
+                        imageUrl = $"data:{mimeType};base64,{Convert.ToBase64String(imagePart.Data)}";
+                    }
+
+                    if (imageUrl != null)
+                    {
+                        parts.Add(new OpenAIContentPart
+                        {
+                            Type = "image_url",
+                            ImageUrl = new OpenAIImageUrl { Url = imageUrl }
+                        });
+                    }
+                    break;
+
+                case AudioPart audioPart:
+                    if (audioPart.Data != null)
+                    {
+                        var format = audioPart.MimeType switch
+                        {
+                            "audio/wav" => "wav",
+                            "audio/mp3" => "mp3",
+                            "audio/mpeg" => "mp3",
+                            _ => "wav"
+                        };
+                        parts.Add(new OpenAIContentPart
+                        {
+                            Type = "input_audio",
+                            InputAudio = new OpenAIInputAudio
+                            {
+                                Data = Convert.ToBase64String(audioPart.Data),
+                                Format = format
+                            }
+                        });
+                    }
+                    break;
+
+                case FilePart filePart:
+                    // OpenAI supports PDF URLs as image_url type
+                    parts.Add(new OpenAIContentPart
+                    {
+                        Type = "image_url",
+                        ImageUrl = new OpenAIImageUrl { Url = filePart.Url }
+                    });
+                    break;
+            }
+        }
+
+        return parts;
+    }
+
     private static LanguageModelGenerateResult MapToGenerateResult(OpenAIResponse response)
     {
         var choice = response.Choices[0];
@@ -222,7 +302,7 @@ public class OpenAIChatLanguageModel : ILanguageModel
 
         return new LanguageModelGenerateResult
         {
-            Text = message?.Content,
+            Text = message?.Content?.ToString(),
             FinishReason = MapFinishReason(choice.FinishReason),
             Usage = response.Usage != null ? MapUsage(response.Usage) : new Usage(),
             ToolCalls = message?.ToolCalls?.Select(tc => new ToolCall(

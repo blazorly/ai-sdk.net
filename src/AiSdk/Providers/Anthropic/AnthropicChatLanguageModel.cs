@@ -239,7 +239,7 @@ public class AnthropicChatLanguageModel : ILanguageModel
                 messages.Add(new AnthropicMessage
                 {
                     Role = MapRole(msg.Role),
-                    Content = msg.Content ?? string.Empty
+                    Content = BuildAnthropicContent(msg)
                 });
             }
             else if (msg.Role == MessageRole.Tool)
@@ -290,6 +290,98 @@ public class AnthropicChatLanguageModel : ILanguageModel
         }
 
         return request;
+    }
+
+    /// <summary>
+    /// Builds the content for an Anthropic message, supporting both simple text and multi-modal content parts.
+    /// Anthropic uses content blocks natively: text, image (base64/url), and document.
+    /// </summary>
+    private static object BuildAnthropicContent(Message message)
+    {
+        // If no multi-modal parts, use plain text content
+        if (message.Parts == null || message.Parts.Count == 0)
+        {
+            return message.Content ?? string.Empty;
+        }
+
+        // Build a list of Anthropic content blocks
+        var blocks = new List<AnthropicContentBlock>();
+
+        foreach (var part in message.Parts)
+        {
+            switch (part)
+            {
+                case TextPart textPart:
+                    blocks.Add(new AnthropicContentBlock
+                    {
+                        Type = "text",
+                        Text = textPart.Text
+                    });
+                    break;
+
+                case ImagePart imagePart:
+                    if (imagePart.Data != null)
+                    {
+                        var mimeType = imagePart.MimeType ?? "image/png";
+                        blocks.Add(new AnthropicContentBlock
+                        {
+                            Type = "image",
+                            Source = new AnthropicSource
+                            {
+                                Type = "base64",
+                                MediaType = mimeType,
+                                Data = Convert.ToBase64String(imagePart.Data)
+                            }
+                        });
+                    }
+                    else if (imagePart.Url != null)
+                    {
+                        blocks.Add(new AnthropicContentBlock
+                        {
+                            Type = "image",
+                            Source = new AnthropicSource
+                            {
+                                Type = "url",
+                                Url = imagePart.Url
+                            }
+                        });
+                    }
+                    break;
+
+                case FilePart filePart:
+                    if (filePart.MimeType == "application/pdf")
+                    {
+                        if (filePart.Data != null)
+                        {
+                            blocks.Add(new AnthropicContentBlock
+                            {
+                                Type = "document",
+                                Source = new AnthropicSource
+                                {
+                                    Type = "base64",
+                                    MediaType = filePart.MimeType,
+                                    Data = Convert.ToBase64String(filePart.Data)
+                                }
+                            });
+                        }
+                        else
+                        {
+                            blocks.Add(new AnthropicContentBlock
+                            {
+                                Type = "document",
+                                Source = new AnthropicSource
+                                {
+                                    Type = "url",
+                                    Url = filePart.Url
+                                }
+                            });
+                        }
+                    }
+                    break;
+            }
+        }
+
+        return blocks;
     }
 
     private static LanguageModelGenerateResult MapToGenerateResult(AnthropicResponse response)
