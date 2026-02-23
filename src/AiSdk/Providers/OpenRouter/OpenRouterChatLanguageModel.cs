@@ -286,13 +286,10 @@ public class OpenRouterChatLanguageModel : ILanguageModel
     {
         using var reader = new StreamReader(stream);
 
-        while (!reader.EndOfStream)
+        string? line;
+        while ((line = await reader.ReadLineAsync(cancellationToken)) != null)
         {
-            var line = await reader.ReadLineAsync(cancellationToken);
-            if (line != null)
-            {
-                yield return line;
-            }
+            yield return line;
         }
     }
 }

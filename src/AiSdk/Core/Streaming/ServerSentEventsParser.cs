@@ -21,7 +21,7 @@ public static class ServerSentEventsParser
         using var reader = new StreamReader(stream, Encoding.UTF8, leaveOpen: true);
         var currentEvent = new ServerSentEventBuilder();
 
-        while (!reader.EndOfStream && !cancellationToken.IsCancellationRequested)
+        while (!cancellationToken.IsCancellationRequested)
         {
             var line = await reader.ReadLineAsync(cancellationToken);
 

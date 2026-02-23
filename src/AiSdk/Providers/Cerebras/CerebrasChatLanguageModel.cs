@@ -271,13 +271,14 @@ public class CerebrasChatLanguageModel : ILanguageModel
     {
         using var reader = new StreamReader(stream);
 
-        while (!reader.EndOfStream)
+        while (true)
         {
             var line = await reader.ReadLineAsync(cancellationToken);
-            if (line != null)
+            if (line is null)
             {
-                yield return line;
+                break;
             }
+            yield return line;
         }
     }
 }
