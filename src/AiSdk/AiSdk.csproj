@@ -13,8 +13,37 @@
     <AssemblyVersion>1.0.1.0</AssemblyVersion>
     <FileVersion>1.0.1.0</FileVersion>
     <SignAssembly>False</SignAssembly>
-    <Version>1.2.1</Version>
-    <PackageReleaseNotes>Added ZAI Provider</PackageReleaseNotes>
+    <Version>1.3.0</Version>
+    <PackageReleaseNotes>Multi-modal messages, agent loop, embeddings, middleware, MCP, image generation, speech &amp; telemetry (b012d808 / PR #1)
+A major feature release covering the following areas:
+Multi-modal Support
+• Added ContentPart model to support text, image, and other content types within a single message.
+• Extended Message to carry multi-part content.
+Agent Loop
+• Introduced AiClient with a built-in agent loop for multi-step, tool-augmented generation via GenerateTextResult and StepResult.
+• Added GenerateTextOptions for fine-grained control over generation behaviour.
+Embeddings
+• New embedding models for Azure OpenAI, Cohere, Google, Mistral, and OpenAI.
+• Accompanying embedding model enumerations (AzureOpenAIEmbeddingModels, CohereEmbeddingModels, GoogleEmbeddingModels, MistralEmbeddingModels, OpenAIEmbeddingModels).
+Middleware Pipeline
+• New ILanguageModelMiddleware abstraction for composable request/response interception.
+• Built-in CachingMiddleware and LoggingMiddleware implementations.
+• MiddlewareLanguageModel wrapper and LanguageModelExtensions for easy pipeline composition.
+MCP (Model Context Protocol)
+• Added IMcpClient, McpToolDefinition, and McpToolProvider for integrating MCP-compatible tool sources into the agent loop.
+Image Generation &amp; Speech
+• OpenAIImageGenerationModel — generate images via OpenAI's image API.
+• OpenAISpeechModel — text-to-speech via OpenAI.
+• OpenAITranscriptionModel and ITranscriptionModel interface for audio transcription.
+Reranking
+• CohereRerankModel and IRerankModel interface for document reranking workflows.
+Provider Registry &amp; Factories
+• Added IProviderFactory and ProviderRegistry for centralised provider management.
+• New provider/factory classes for Azure OpenAI, Cohere, Google, Mistral, and OpenAI.
+Tool Execution
+• Added IToolExecutor interface for structured tool invocation within the agent loop.
+Telemetry
+• Added AiSdkActivitySource providing OpenTelemetry-compatible activity tracing for SDK operations.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
