@@ -5,30 +5,30 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Microsoft Extensions -->
-    <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.2" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.2" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.2" />
-    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.2" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.2" />
-    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="10.0.2" />
-    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.8" />
     <PackageVersion Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.9" />
     <PackageVersion Include="Microsoft.AspNetCore.Builder.Abstractions" Version="8.0.0" />
     <!-- JSON -->
     <PackageVersion Include="System.Text.Json" Version="10.0.0" />
     <!-- HTTP & Resilience -->
     <PackageVersion Include="Polly" Version="8.5.0" />
-    <PackageVersion Include="Polly.Core" Version="8.6.5" />
-    <PackageVersion Include="Polly.Extensions" Version="8.6.5" />
+    <PackageVersion Include="Polly.Core" Version="8.6.6" />
+    <PackageVersion Include="Polly.Extensions" Version="8.6.6" />
     <!-- Validation -->
     <PackageVersion Include="FluentValidation" Version="11.11.0" />
     <!-- OpenTelemetry -->
     <PackageVersion Include="OpenTelemetry" Version="1.11.2" />
-    <PackageVersion Include="OpenTelemetry.Api" Version="1.14.0" />
+    <PackageVersion Include="OpenTelemetry.Api" Version="1.15.3" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.11.2" />
     <!-- SourceLink -->
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.102" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.300" />
     <!-- Testing -->
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageVersion Include="xunit.v3" Version="3.2.2" />
@@ -45,6 +45,6 @@
     <!-- API Documentation -->
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.2.0" />
     <!-- AWS SDK -->
-    <PackageVersion Include="AWSSDK.BedrockRuntime" Version="4.0.14.6" />
+    <PackageVersion Include="AWSSDK.BedrockRuntime" Version="4.0.20.2" />
   </ItemGroup>
 </Project>
