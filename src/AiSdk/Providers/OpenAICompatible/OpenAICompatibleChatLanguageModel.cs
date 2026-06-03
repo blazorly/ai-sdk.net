@@ -114,6 +114,7 @@ public class OpenAICompatibleChatLanguageModel : ILanguageModel
         await EnsureSuccessStatusCode(response);
 
         var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+        var toolCallsInProgress = new Dictionary<int, ToolCallBuilder>();
 
         await foreach (var line in ReadLinesAsync(stream, cancellationToken))
         {
@@ -139,8 +140,58 @@ public class OpenAICompatibleChatLanguageModel : ILanguageModel
                         };
                     }
 
+                    if (delta.ToolCalls != null)
+                    {
+                        foreach (var toolCallDelta in delta.ToolCalls)
+                        {
+                            if (!toolCallsInProgress.TryGetValue(toolCallDelta.Index, out var builder))
+                            {
+                                builder = new ToolCallBuilder();
+                                toolCallsInProgress[toolCallDelta.Index] = builder;
+                            }
+
+                            if (!string.IsNullOrEmpty(toolCallDelta.Id))
+                            {
+                                builder.Id = toolCallDelta.Id;
+                            }
+
+                            if (!string.IsNullOrEmpty(toolCallDelta.Function?.Name))
+                            {
+                                builder.Name = toolCallDelta.Function.Name;
+                            }
+
+                            if (!string.IsNullOrEmpty(toolCallDelta.Function?.Arguments))
+                            {
+                                builder.Arguments.Append(toolCallDelta.Function.Arguments);
+                            }
+                        }
+                    }
+
                     if (choice.FinishReason != null)
                     {
+                        foreach (var toolCall in toolCallsInProgress.OrderBy(pair => pair.Key).Select(pair => pair.Value))
+                        {
+                            if (string.IsNullOrWhiteSpace(toolCall.Id))
+                            {
+                                throw new OpenAICompatibleException("OpenAI-compatible stream emitted a tool call without an id");
+                            }
+
+                            if (string.IsNullOrWhiteSpace(toolCall.Name))
+                            {
+                                throw new OpenAICompatibleException("OpenAI-compatible stream emitted a tool call without a function name");
+                            }
+
+                            yield return new LanguageModelStreamChunk
+                            {
+                                Type = ChunkType.ToolCallDelta,
+                                ToolCall = new ToolCall(
+                                    toolCall.Id,
+                                    toolCall.Name,
+                                    JsonDocument.Parse(toolCall.Arguments.Length > 0 ? toolCall.Arguments.ToString() : "{}"))
+                            };
+                        }
+                        toolCallsInProgress.Clear();
+
                         yield return new LanguageModelStreamChunk
                         {
                             Type = ChunkType.Finish,
@@ -155,7 +206,7 @@ public class OpenAICompatibleChatLanguageModel : ILanguageModel
 
     private void ConfigureHttpClient()
     {
-        _httpClient.BaseAddress = new Uri(_config.BaseUrl);
+        _httpClient.BaseAddress = new Uri(NormalizeBaseUrl(_config.BaseUrl));
 
         // Only add Authorization header if API key is provided
         if (!string.IsNullOrEmpty(_config.ApiKey))
@@ -170,12 +221,27 @@ public class OpenAICompatibleChatLanguageModel : ILanguageModel
         }
     }
 
+    private static string NormalizeBaseUrl(string baseUrl)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(baseUrl);
+        return baseUrl.EndsWith("/", StringComparison.Ordinal) ? baseUrl : $"{baseUrl}/";
+    }
+
     private OpenAICompatibleRequest BuildRequest(LanguageModelCallOptions options, bool stream)
     {
         var messages = options.Messages.Select(m => new OpenAICompatibleMessage
         {
             Role = MapRole(m.Role),
             Content = m.Content,
+            ToolCalls = m.ToolCalls?.Select(tc => new OpenAICompatibleToolCall
+            {
+                Id = tc.ToolCallId,
+                Function = new OpenAICompatibleFunctionCall
+                {
+                    Name = tc.ToolName,
+                    Arguments = tc.Arguments.RootElement.GetRawText()
+                }
+            }).ToList(),
             // Tool role messages use Name as ToolCallId
             ToolCallId = m.Role == MessageRole.Tool ? m.Name : null
         }).ToList();
@@ -209,6 +275,13 @@ public class OpenAICompatibleChatLanguageModel : ILanguageModel
         }
 
         return request;
+    }
+
+    private sealed class ToolCallBuilder
+    {
+        public string? Id { get; set; }
+        public string? Name { get; set; }
+        public StringBuilder Arguments { get; } = new();
     }
 
     private static LanguageModelGenerateResult MapToGenerateResult(OpenAICompatibleResponse response)

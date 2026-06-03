@@ -19,6 +19,12 @@ public record Message(
     /// instead of the plain text Content property.
     /// </summary>
     public IReadOnlyList<ContentPart>? Parts { get; init; }
+
+    /// <summary>
+    /// Tool calls made by an assistant message. Tool result messages reference
+    /// these calls through their <see cref="Name"/> value.
+    /// </summary>
+    public IReadOnlyList<ToolCall>? ToolCalls { get; init; }
 }
 
 /// <summary>

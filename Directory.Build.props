@@ -41,6 +41,7 @@
   <!-- Suppress specific warnings -->
   <PropertyGroup>
     <!-- CA1848: Use LoggerMessage delegates for performance -->
-    <NoWarn>$(NoWarn);CA1848</NoWarn>
+    <!-- NU1902: Known vulnerability in transitive deps (OpenTelemetry.Api 1.14.0) — will be resolved when package updates -->
+    <NoWarn>$(NoWarn);CA1848;NU1902</NoWarn>
   </PropertyGroup>
 </Project>
