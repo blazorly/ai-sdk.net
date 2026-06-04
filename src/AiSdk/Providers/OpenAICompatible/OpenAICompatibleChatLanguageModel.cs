@@ -131,19 +131,23 @@ public class OpenAICompatibleChatLanguageModel : ILanguageModel
                     var choice = chunk.Choices[0];
                     var delta = choice.Delta;
 
-                    // Reasoning arrives as a separate field on the streaming
+// Reasoning arrives as a separate field on the streaming
                     // delta (carried by aggregators like OpenRouter for
                     // reasoning-capable models — DeepSeek R1, Grok, etc.).
+                    // Some providers put it at the choice level instead of (or
+                    // in addition to) the delta. We check both so reasoning is
+                    // never missed.
                     // Emit it as ReasoningDelta so the consumer can render
                     // it as a distinct thinking block instead of mixing it
                     // into the answer.
-                    if (!string.IsNullOrEmpty(delta.Reasoning))
+                    var reasoningText = delta.Reasoning ?? choice.Reasoning;
+                    if (!string.IsNullOrEmpty(reasoningText))
                     {
                         yield return new LanguageModelStreamChunk
                         {
                             Type = ChunkType.ReasoningDelta,
                             Id = chunk.Id,
-                            ReasoningContent = delta.Reasoning
+                            ReasoningContent = reasoningText
                         };
                     }
 
@@ -273,11 +277,13 @@ public class OpenAICompatibleChatLanguageModel : ILanguageModel
             Stream = stream
         };
 
-        // Ask reasoning-capable models (via OpenRouter etc.) to emit thinking tokens.
+// Ask reasoning-capable models (via OpenRouter etc.) to emit thinking tokens.
+        // OpenRouter requires enabled:true (not just effort) to activate reasoning:
+        //   https://openrouter.ai/docs/features/reasoning
         // Only sent when an effort is configured, so default requests are unchanged.
         if (!string.IsNullOrWhiteSpace(_config.ReasoningEffort))
         {
-            request = request with { Reasoning = new { effort = _config.ReasoningEffort } };
+            request = request with { Reasoning = new { enabled = true, effort = _config.ReasoningEffort } };
         }
 
         if (options.Tools?.Count > 0)

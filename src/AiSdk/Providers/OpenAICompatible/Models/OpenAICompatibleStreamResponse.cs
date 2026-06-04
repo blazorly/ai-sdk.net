@@ -39,6 +39,14 @@ internal record OpenAICompatibleStreamChoice
 
     [JsonPropertyName("finish_reason")]
     public string? FinishReason { get; init; }
+
+    /// <summary>
+    /// Some providers (OpenRouter, Together, etc.) place the reasoning token at the
+    /// choice level in certain streaming chunks rather than inside the delta.  We
+    /// check both so reasoning is never missed.
+    /// </summary>
+    [JsonPropertyName("reasoning")]
+    public string? Reasoning { get; init; }
 }
 
 /// <summary>
