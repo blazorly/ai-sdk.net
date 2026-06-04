@@ -125,13 +125,18 @@ public class ZAIChatLanguageModel : ILanguageModel
                     var choice = chunk.Choices[0];
                     var delta = choice.Delta;
 
-                    // Yield reasoning content if present (for deep thinking mode)
+                    // Reasoning content arrives on its own field. Emit it as
+                    // ReasoningDelta so the consumer can render it as a
+                    // distinct thinking block instead of letting it leak into
+                    // the final answer (the old behavior — pre-fix the
+                    // reasoning was emitted as a TextDelta, which mixed the
+                    // model's chain-of-thought into the response text).
                     if (!string.IsNullOrEmpty(delta.ReasoningContent))
                     {
                         yield return new LanguageModelStreamChunk
                         {
-                            Type = ChunkType.TextDelta,
-                            Delta = delta.ReasoningContent
+                            Type = ChunkType.ReasoningDelta,
+                            ReasoningContent = delta.ReasoningContent
                         };
                     }
 
@@ -216,18 +221,14 @@ public class ZAIChatLanguageModel : ILanguageModel
         var choice = response.Choices[0];
         var message = choice.Message;
 
-        // Combine reasoning content and regular content if present
-        var text = message?.Content;
-        if (!string.IsNullOrEmpty(message?.ReasoningContent))
-        {
-            text = string.IsNullOrEmpty(text) 
-                ? message.ReasoningContent 
-                : message.ReasoningContent + "\n\n" + text;
-        }
-
+        // Reasoning content is a separate field on the result, not
+        // concatenated into Text — the consumer renders it as a distinct
+        // thinking block instead of letting the chain-of-thought leak into
+        // the final answer.
         return new LanguageModelGenerateResult
         {
-            Text = text,
+            Text = message?.Content,
+            ReasoningContent = message?.ReasoningContent,
             FinishReason = MapFinishReason(choice.FinishReason),
             Usage = response.Usage != null ? MapUsage(response.Usage) : new Usage(),
             ToolCalls = message?.ToolCalls?.Select(tc => new ToolCall(

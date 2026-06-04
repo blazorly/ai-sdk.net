@@ -39,4 +39,11 @@ public record LanguageModelGenerateResult
     /// Raw finish reason from the provider (before normalization).
     /// </summary>
     public string? RawFinishReason { get; init; }
+
+    /// <summary>
+    /// Reasoning / "thinking" content from the model, if the provider
+    /// surfaces it on non-streaming responses. Null when the model did not
+    /// emit reasoning, or when the provider does not support it.
+    /// </summary>
+    public string? ReasoningContent { get; init; }
 }

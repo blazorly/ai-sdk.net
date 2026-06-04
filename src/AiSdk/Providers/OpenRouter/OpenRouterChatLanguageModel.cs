@@ -130,6 +130,20 @@ public class OpenRouterChatLanguageModel : ILanguageModel
                     var choice = chunk.Choices[0];
                     var delta = choice.Delta;
 
+                    if (!string.IsNullOrEmpty(delta.Reasoning))
+                    {
+                        // Reasoning arrives as a separate field on the streaming
+                        // delta. Emit it as ReasoningDelta so the consumer can
+                        // render it as a distinct thinking block instead of
+                        // mixing it into the answer.
+                        yield return new LanguageModelStreamChunk
+                        {
+                            Type = ChunkType.ReasoningDelta,
+                            Id = chunk.Id,
+                            ReasoningContent = delta.Reasoning
+                        };
+                    }
+
                     if (!string.IsNullOrEmpty(delta.Content))
                     {
                         yield return new LanguageModelStreamChunk
@@ -225,6 +239,7 @@ public class OpenRouterChatLanguageModel : ILanguageModel
         return new LanguageModelGenerateResult
         {
             Text = message?.Content,
+            ReasoningContent = message?.Reasoning,
             FinishReason = MapFinishReason(choice.FinishReason),
             Usage = response.Usage != null ? MapUsage(response.Usage) : new Usage(),
             ToolCalls = message?.ToolCalls?.Select(tc => new ToolCall(

@@ -28,4 +28,11 @@ public record OpenAICompatibleConfiguration
     /// If not set, the default HttpClient timeout (100 seconds) will be used.
     /// </summary>
     public int? TimeoutSeconds { get; init; }
+
+    /// <summary>
+    /// Optional reasoning/"thinking" effort to request from reasoning-capable models via
+    /// OpenAI-compatible aggregators (notably OpenRouter). One of "low"/"medium"/"high".
+    /// When null/empty, no <c>reasoning</c> parameter is sent — behaviour is unchanged.
+    /// </summary>
+    public string? ReasoningEffort { get; init; }
 }

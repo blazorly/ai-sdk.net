@@ -39,6 +39,15 @@ internal record OpenAICompatibleRequest
     [JsonPropertyName("tool_choice")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public object? ToolChoice { get; init; }
+
+    /// <summary>
+    /// Reasoning request config for reasoning-capable models via OpenAI-compatible
+    /// aggregators (e.g. OpenRouter expects <c>{ "effort": "low|medium|high" }</c>).
+    /// Omitted when null so non-reasoning requests are byte-for-byte unchanged.
+    /// </summary>
+    [JsonPropertyName("reasoning")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public object? Reasoning { get; init; }
 }
 
 /// <summary>
@@ -52,6 +61,16 @@ internal record OpenAICompatibleMessage
     [JsonPropertyName("content")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Content { get; init; }
+
+    /// <summary>
+    /// Reasoning / "thinking" content surfaced by reasoning-capable models on
+    /// non-streaming responses via OpenAI-compatible aggregators (e.g. OpenRouter
+    /// carrying the <c>reasoning</c> field). Null on the request and on responses
+    /// from providers/models that don't emit reasoning.
+    /// </summary>
+    [JsonPropertyName("reasoning")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Reasoning { get; init; }
 
     [JsonPropertyName("tool_calls")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

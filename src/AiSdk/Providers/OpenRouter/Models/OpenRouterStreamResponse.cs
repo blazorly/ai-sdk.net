@@ -52,6 +52,16 @@ internal record OpenRouterDelta
     [JsonPropertyName("content")]
     public string? Content { get; init; }
 
+    /// <summary>
+    /// Reasoning / "thinking" content emitted by reasoning-capable models
+    /// (e.g. DeepSeek R1, Qwen QwQ, OpenAI o1, Anthropic via OpenRouter).
+    /// OpenRouter carries this as a top-level <c>reasoning</c> field on the
+    /// streaming delta; we surface it as a separate chunk type so the UI
+    /// can render it as a distinct thinking block.
+    /// </summary>
+    [JsonPropertyName("reasoning")]
+    public string? Reasoning { get; init; }
+
     [JsonPropertyName("tool_calls")]
     public List<OpenRouterToolCallDelta>? ToolCalls { get; init; }
 }

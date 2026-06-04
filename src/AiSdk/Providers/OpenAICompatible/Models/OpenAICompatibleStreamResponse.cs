@@ -52,6 +52,18 @@ internal record OpenAICompatibleDelta
     [JsonPropertyName("content")]
     public string? Content { get; init; }
 
+    /// <summary>
+    /// Reasoning / "thinking" content emitted by reasoning-capable models
+    /// surfaced through OpenAI-compatible aggregators (OpenRouter, etc.).
+    ///
+    /// OpenRouter carries this as a top-level <c>reasoning</c> field on the
+    /// streaming delta. We surface it as a separate chunk type so the UI
+    /// can render it as a distinct thinking block. Providers that don't
+    /// support reasoning simply omit this field, in which case it stays null.
+    /// </summary>
+    [JsonPropertyName("reasoning")]
+    public string? Reasoning { get; init; }
+
     [JsonPropertyName("tool_calls")]
     public List<OpenAICompatibleToolCallDelta>? ToolCalls { get; init; }
 }

@@ -53,6 +53,15 @@ internal record OpenRouterMessage
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Content { get; init; }
 
+    /// <summary>
+    /// Reasoning / "thinking" content from the model. Populated on
+    /// non-streaming responses for reasoning-capable models; null on
+    /// streaming responses (which carry reasoning on the delta instead).
+    /// </summary>
+    [JsonPropertyName("reasoning")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Reasoning { get; init; }
+
     [JsonPropertyName("tool_calls")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<OpenRouterToolCall>? ToolCalls { get; init; }

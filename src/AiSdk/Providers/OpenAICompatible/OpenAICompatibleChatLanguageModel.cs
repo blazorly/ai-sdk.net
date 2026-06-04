@@ -131,6 +131,22 @@ public class OpenAICompatibleChatLanguageModel : ILanguageModel
                     var choice = chunk.Choices[0];
                     var delta = choice.Delta;
 
+                    // Reasoning arrives as a separate field on the streaming
+                    // delta (carried by aggregators like OpenRouter for
+                    // reasoning-capable models — DeepSeek R1, Grok, etc.).
+                    // Emit it as ReasoningDelta so the consumer can render
+                    // it as a distinct thinking block instead of mixing it
+                    // into the answer.
+                    if (!string.IsNullOrEmpty(delta.Reasoning))
+                    {
+                        yield return new LanguageModelStreamChunk
+                        {
+                            Type = ChunkType.ReasoningDelta,
+                            Id = chunk.Id,
+                            ReasoningContent = delta.Reasoning
+                        };
+                    }
+
                     if (!string.IsNullOrEmpty(delta.Content))
                     {
                         yield return new LanguageModelStreamChunk
@@ -257,6 +273,13 @@ public class OpenAICompatibleChatLanguageModel : ILanguageModel
             Stream = stream
         };
 
+        // Ask reasoning-capable models (via OpenRouter etc.) to emit thinking tokens.
+        // Only sent when an effort is configured, so default requests are unchanged.
+        if (!string.IsNullOrWhiteSpace(_config.ReasoningEffort))
+        {
+            request = request with { Reasoning = new { effort = _config.ReasoningEffort } };
+        }
+
         if (options.Tools?.Count > 0)
         {
             request = request with
@@ -292,6 +315,10 @@ public class OpenAICompatibleChatLanguageModel : ILanguageModel
         return new LanguageModelGenerateResult
         {
             Text = message?.Content,
+            // Reasoning is a separate field on the result, not concatenated
+            // into Text — the consumer renders it as a distinct thinking
+            // block instead of letting chain-of-thought leak into the answer.
+            ReasoningContent = message?.Reasoning,
             FinishReason = MapFinishReason(choice.FinishReason),
             Usage = response.Usage != null ? MapUsage(response.Usage) : new Usage(),
             ToolCalls = message?.ToolCalls?.Select(tc => new ToolCall(
